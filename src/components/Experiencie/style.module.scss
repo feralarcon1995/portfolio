@@ -41,7 +41,7 @@
     position: relative;
     color: var(--light);
     z-index: 1;
-    h2{
+    h2 {
       font-size: 6rem;
     }
     h3 {
@@ -72,12 +72,55 @@
       h4 {
         font-size: 1.8rem;
       }
-      div {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        width: 90%;
+
+      .slider {
+        width: 100%;
+        overflow: hidden;
+        height: var(--height);
+        mask-image: linear-gradient(to right, transparent, #000 10% 90%, transparent);
       }
+
+      .slider .slider_list {
+        display: flex;
+        width: 100%;
+        min-width: calc(var(--width) * var(--quantity));
+        position: relative;
+      }
+
+      .slider .slider_list .slider_item {
+        width: var(--width);
+        height: var(--height);
+        position: absolute;
+        left: 100%;
+        animation: autoRun var(--duration) linear infinite;
+        animation-delay: calc((var(--duration) / var(--quantity)) * (var(--position) - 1) - 10s) !important;
+      }
+      .slider .slider_list .slider_item span {
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        border: 1px solid var(--light);
+        cursor: pointer;
+        width: 100%;
+        background: linear-gradient(45deg, var(--hover), var(--hover));
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        background-size: 0% 100%;
+        transition: background-size 0.3s;
+        &:hover {
+          color: var(--text-hover);
+          background-size: 100% 100%;
+        }
+      }
+      .slider.reverse .slider_item {
+        animation: reversePlay var(--duration) linear infinite;
+      }
+      .slider:hover .slider_item {
+        animation-play-state: paused !important;
+      }
+
     }
     .experience_header {
       display: flex;
@@ -158,13 +201,13 @@
 
 @media (max-width: 900px) {
   .experience_container {
-    .experience_details{
-      .experience_header{
-        h3{
-          font-size:3rem;
+    .experience_details {
+      .experience_header {
+        h3 {
+          font-size: 3rem;
         }
       }
-      .experience_description{
+      .experience_description {
         font-size: 1.5rem;
       }
     }
@@ -191,3 +234,20 @@
   }
 }
 
+@keyframes autoRun {
+  from {
+    left: 100%;
+  }
+  to {
+    left: calc(var(--width) * -1);
+  }
+}
+
+@keyframes reversePlay {
+  from {
+    left: calc(var(--width) * -1);
+  }
+  to {
+    left: 100%;
+  }
+}

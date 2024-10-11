@@ -101,9 +101,3 @@
   }
 }
 
-.marquee_container {
-  display: flex;
-  gap: 2rem; // Espacio entre los botones
-  overflow: hidden; // Para ocultar los botones fuera del área visible
-  white-space: nowrap; // Evita el salto de línea
-}
