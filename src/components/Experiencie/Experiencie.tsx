@@ -1,34 +1,170 @@
 import { useEffect, useRef } from 'react';
 import Lenis from '@studio-freight/lenis';
-import { motion, useAnimation } from 'framer-motion';
-import Image from 'next/image';
+import { motion, useAnimation, useInView } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import styles from './style.module.scss';
-// import { RButton } from '../Button/RButton';
-import { ArrowUp } from '@/icons/ArrowUp';
-export default function Experiencie() {
-  const experiences = [
+import Magnet from '../Magnet/Magnet';
+
+const CustomCursor = dynamic(() => import('./CustomCursor'), { ssr: false });
+const Testimonials = dynamic(() => import('./Testimonials'), { ssr: false });
+const ExperienceTimeline = dynamic(() => import('./ExperienceTimeline'), { ssr: false });
+
+interface TechStack {
+  id: string;
+  name: string;
+}
+
+interface Testimonial {
+  id: string;
+  author: string;
+  position: string;
+  quote: string;
+  linkedin: string;
+  color: string;
+}
+
+interface Experience {
+  title: string;
+  company: string;
+  link_company: string;
+  date: string;
+  description: string;
+  thumbnail: string;
+  image: string;
+  color: string;
+  stack: TechStack[];
+  testimonials: Testimonial[];
+}
+
+interface ExperienceItemProps {
+  experience: Experience;
+  index: number;
+}
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 50, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
+};
+
+const ExperienceItem = ({ experience, index }: ExperienceItemProps) => {
+  const expRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(expRef, { once: true, amount: 0.3 });
+  const controls = useAnimation();
+  const stackControls = useAnimation();
+
+  useEffect(() => {
+    if (isInView) {
+      controls.start('visible');
+      setTimeout(() => {
+        stackControls.start('visible');
+      }, 600);
+    }
+  }, [isInView, controls, stackControls]);
+
+  return (
+    <motion.article
+      ref={expRef}
+      className={styles.experience_details}
+      key={index}
+      variants={containerVariants}
+      initial="hidden"
+      animate={controls}
+    >
+      <motion.div className={styles.experience_header} variants={itemVariants}>
+        <div className={styles.experience_title}>
+          <Magnet padding={50} disabled={false} magnetStrength={10}>
+            <motion.h3 variants={itemVariants}>{experience.title}</motion.h3>
+          </Magnet>
+          <Magnet padding={50} disabled={false} magnetStrength={10}>
+            <motion.p className={styles.experience_description} variants={itemVariants}>
+              {experience.description}
+            </motion.p></Magnet>
+        </div>
+        <motion.a
+          href={experience.link_company}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.image_container_link}
+          data-cursor-text={`find out more about ${experience.company} here`}
+          variants={itemVariants}
+        >
+          {isInView && <CustomCursor text={`find out more about ${experience.company} here`} />}
+          <div className={styles.image_container}>
+            <img src={experience.image} />
+          </div>
+          <div className={styles.text_cutout}>  {experience.company}</div>
+        </motion.a>
+      </motion.div>
+      <div className={styles.grid_content}>
+        <motion.div variants={itemVariants} className={styles.experience_timeline_wrapper}>
+          <ExperienceTimeline experience={experience} isInView={isInView} />
+        </motion.div>
+        <motion.div variants={itemVariants} className={styles.testimonials_wrapper}>
+          <motion.h4 variants={itemVariants}>what the people I work with say</motion.h4>
+          {experience.testimonials.filter((t: Testimonial) => Object.keys(t).length > 0).length > 0 ? (
+            isInView && (
+              <Testimonials
+                testimonials={experience.testimonials.filter((t: Testimonial) => Object.keys(t).length > 0)}
+              />
+            )
+          ) : (
+            <motion.p className={styles.no_testimonials} variants={itemVariants}>
+              No testimonials available.
+            </motion.p>
+          )}
+        </motion.div>
+      </div>
+    </motion.article>
+  );
+};
+
+export default function Experience() {
+  const experiences: Experience[] = [
     {
-      title: "Fullstack Developer",
-      company: "Banco Comafi",
+      title: 'Fullstack Developer',
+      company: 'Banco Comafi',
       link_company: 'https://www.comafi.com.ar/',
-      date: "June 2024 - Currently",
-      description: "In my role on the team, I contribute to the creation of frontend components with Next.js and TypeScript, as well as backend development using AWS Serverless. My work includes designing and implementing user interfaces and managing cloud services to ensure seamless platform functionality.",
-      thumbnail: '/images/company_logo/comafi.png',
+      date: 'June 2024 - Currently',
+      description:
+        'In my role on the team, I contribute to the creation of frontend components with Next.js and TypeScript, as well as backend development using AWS Serverless. My work includes designing and implementing user interfaces and managing cloud services to ensure seamless platform functionality.',
+      thumbnail: '/images/company_logo/comafi-logo.jpg',
+      image: '/images/company_logo/comafi.webp',
+      color: '#0e5c02de',
       stack: [
         { id: 'nextjs', name: 'NEXTJS' },
         { id: 'typescript', name: 'TYPESCRIPT' },
         { id: 'aws', name: 'AWS' },
         { id: 'nodejs', name: 'NODEJS' },
-        { id: 'materialui', name: 'MATERIAL UI' }
-      ]
+        { id: 'materialui', name: 'MATERIAL UI' },
+      ],
+      testimonials: [],
     },
     {
-      title: "Web Development Teacher",
-      company: "Coderhouse",
+      title: 'Web Development Teacher',
+      company: 'Coderhouse',
       link_company: 'https://www.coderhouse.com/',
-      date: "October 2022 - Currently",
-      description: "As a professor, I design lesson plans and guide both students and the tutoring team. I teach core web development technologies such as HTML, CSS, SASS, Bootstrap, JavaScript, and Git.",
+      date: 'October 2022 - December 2024',
+      description:
+        'As a professor, I design lesson plans and guide both students and the tutoring team. I teach core web development technologies such as HTML, CSS, SASS, Bootstrap, JavaScript, and Git.',
+      image: '/images/company_logo/coderhouse.jpg',
       thumbnail: '/images/company_logo/coder.jpg',
+      color: '#191919e0',
       stack: [
         { id: 'html', name: 'HTML' },
         { id: 'css', name: 'CSS' },
@@ -37,177 +173,110 @@ export default function Experiencie() {
         { id: 'git', name: 'GIT' },
         { id: 'scss', name: 'SCSS' },
         { id: 'python', name: 'PYTHON' },
-        { id: 'django', name: 'DJANGO' }
-      ]
+        { id: 'django', name: 'DJANGO' },
+      ],
+      testimonials: [
+        {
+          id: 'lema',
+          author: 'Nahuel Lema',
+          position: 'Co-Founder Coderhouse',
+          quote:
+            'Fernando is a master of JavaScript. His ability to teach in a clear and motivating way is exceptional. Fernando excels in web development, JavaScript and effective teaching methods and I highly recommend Fernando as a teacher for those who want to master JavaScript!',
+          linkedin: 'https://www.linkedin.com/in/nahuellema/',
+          color: '#282022',
+        },
+        {
+          id: 'massonnat',
+          author: 'Mario Massonnat',
+          position: "Technical Facilitator of 'Yo Puedo Programar' in Junior Achievement Santa Fe",
+          quote:
+            'Excellent tutor and great developer. He demonstrates a lot of knowledge and is also a very responsible and predisposed person for his work.',
+          linkedin: 'https://www.linkedin.com/in/mario-massonnat/',
+          color: '#312032',
+        },
+        {
+          id: 'martin',
+          author: 'Martin Manriquez Leon',
+          position: ' Software Engineer in BlackLine',
+          quote:
+            'Fernando has been an incredible contributor to the projects he is involved in, being active with any questions or suggestions and bringing new topics to the discussions and meetings.',
+          linkedin: 'https://www.linkedin.com/in/martin-manriquez/',
+          color: '#342324',
+        },
+      ],
     },
     {
-      title: "Frontend Developer",
-      company: "Proactive Talent Hub",
-      date: "May 2023 - March 2024",
+      title: 'Frontend Developer',
+      company: 'Proactive Talent Hub',
+      date: 'May 2023 - March 2024',
       link_company: 'https://www.linkedin.com/company/proactivetalenthub',
-      description: "In my role as a frontend developer, I create and implement web platforms using ReactJS, focusing on delivering seamless layouts and user experiences.",
+      description:
+        'In my role as a frontend developer, I create and implement web platforms using ReactJS, focusing on delivering seamless layouts and user experiences.',
       thumbnail: '/images/company_logo/path.jpg',
+      image: '/images/company_logo/proactive.avif',
+      color: '#031b37c9',
       stack: [
         { id: 'reactjs', name: 'REACTJS' },
         { id: 'javascript', name: 'JAVASCRIPT' },
         { id: 'bootstrap', name: 'BOOTSTRAP' },
-        { id: 'css', name: 'CSS' }
-      ]
-    }
+        { id: 'css', name: 'CSS' },
+      ],
+      testimonials: [],
+    },
   ];
-
-  const stackColors: Record<string, { bgColor: string; textColor: string, hoverColor: string }> = {
-    nextjs: { bgColor: 'var(--light)', textColor: 'var(--light)', hoverColor: 'var(--black)' },
-    typescript: { bgColor: '#009cff', textColor: '#009cff', hoverColor: 'var(--light)' },
-    aws: { bgColor: '#ff6a00', textColor: '#ff6a00', hoverColor: 'var(--light)' },
-    nodejs: { bgColor: '#167614', textColor: '#167614', hoverColor: 'var(--light)' },
-    materialui: { bgColor: '#0070f3', textColor: '#0070f3', hoverColor: 'var(--light)' },
-    html: { bgColor: '#e34c26', textColor: '#e34c26', hoverColor: 'var(--light)' },
-    css: { bgColor: '#264de4', textColor: '#264de4', hoverColor: 'var(--light)' },
-    javascript: { bgColor: '#f7df1e', textColor: '#f7df1e', hoverColor: 'var(--light)' },
-    bootstrap: { bgColor: '#B175FF', textColor: '#B175FF', hoverColor: 'var(--light)' },
-    git: { bgColor: '#f05032', textColor: '#f05032', hoverColor: 'var(--light)' },
-    scss: { bgColor: '#c6538c', textColor: '#c6538c', hoverColor: 'var(--light)' },
-    python: { bgColor: '#306998', textColor: '#306998', hoverColor: 'var(--light)' },
-    django: { bgColor: '#88CA5E', textColor: '#88CA5E', hoverColor: 'var(--light)' },
-    reactjs: { bgColor: '#61dafb', textColor: '#61dafb', hoverColor: '#000' },
-    default: { bgColor: '#ccc', textColor: '#000', hoverColor: '#000' },
-  };
-
 
   const titleControls = useAnimation();
   const subTitleControls = useAnimation();
-  const imgControls = useAnimation();
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const lenis = useRef<Lenis | null>(null);
-
   useEffect(() => {
-    const lenisInstance = new Lenis({
+    const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
-    lenis.current = lenisInstance;
 
-    const animate = (time: number) => {
-      lenisInstance.raf(time);
-
+    const handleScroll = () => {
       if (sectionRef.current) {
         const sectionTop = sectionRef.current.getBoundingClientRect().top;
         const windowHeight = window.innerHeight;
         const scrollY = window.scrollY;
         const scrollX = window.scrollX;
-        const scaleValue = Math.min(1.5, Math.max(1, 1 + sectionTop / windowHeight));
-        const imageFadeOutPoint = sectionTop + windowHeight * 0.4;
-        const opacityValue = scrollY > imageFadeOutPoint ? 0 : 1;
-
-        imgControls.start({
-          scale: scaleValue,
-          opacity: opacityValue,
-        });
 
         titleControls.start({
           y: sectionTop * 0.1,
           opacity: scrollY > sectionTop - windowHeight ? 1 : 0,
         });
+
         subTitleControls.start({
           x: sectionTop * 0.1,
           opacity: scrollX > sectionTop - windowHeight ? 1 : 0,
         });
       }
+    };
 
+    lenis.on('scroll', handleScroll);
+    const animate = (time: number) => {
+      lenis.raf(time);
       requestAnimationFrame(animate);
     };
     requestAnimationFrame(animate);
 
     return () => {
-      lenisInstance.destroy();
+      lenis.destroy();
     };
-  }, [titleControls, subTitleControls, imgControls]);
-
+  }, [titleControls, subTitleControls]);
 
   return (
     <section ref={sectionRef} className={styles.experience_container} id="experiencie">
-      <motion.div initial={{ scale: 0.5 }} animate={imgControls} className={styles.image_container}>
-        <img src="/images/exp.png" alt="experience" />3
-      </motion.div>
       <article className={styles.article}>
         <motion.article className={styles.title} initial={{ y: -100, opacity: 0 }} animate={titleControls}>
           <motion.h2 animate={titleControls}>My Journey: What I&apos;ve Learned in the Way</motion.h2>
           <motion.h3 animate={subTitleControls}>My Journey: What I&apos;ve Learned in the Way</motion.h3>
         </motion.article>
 
-        {experiences.map((exp, index) => {
-          const baseDuration = 10;
-          const calculatedDuration = baseDuration + exp.stack.length * 1.2;
-          return (
-            <article className={styles.experience_details} key={index}>
-              <div className={styles.experience_header}>
-                <p className={styles.experience_date}>{exp.date}</p>
-                <h3>{exp.title}</h3>
-                <a href={exp.link_company} target="_blank" rel="noopener noreferrer">
-                  <Image
-                    src={exp.thumbnail}
-                    alt={`${exp.company} logo`}
-                    width={40}
-                    height={40}
-                    className={styles.experience_thumbnail}
-                  />   {exp.company} <ArrowUp />
-                </a>
-              </div>
-              <p className={styles.experience_description}>{exp.description}</p>
-              <div className={styles.experience_stack_container}>
-                <h4>Stack in which I work</h4>
-                <div
-                  className={styles.slider}
-                  style={{
-                    '--width': '270px',
-                    '--quantity': `${exp.stack.length}`,
-                    '--height': '50px',
-                    '--duration': `${calculatedDuration}s`
-                  } as React.CSSProperties}>
-                  <div className={styles.slider_list}>
-                    {exp.stack.map((item, index) => {
-                      const { bgColor, hoverColor } = stackColors[item.id] || stackColors.default;
-                      return (
-                        <div key={item.id} className={styles.slider_item} style={{ '--position': `${index + 1}` } as React.CSSProperties}>
-                          <span style={{
-                            '--hover': `${bgColor}`,
-                            '--text-hover': `${hoverColor}`
-                          } as React.CSSProperties}>{item.name}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div
-                  className={`${styles.slider} ${styles.reverse}`}
-                  style={{
-                    '--width': '270px',
-                    '--quantity': `${exp.stack.length}`,
-                    '--height': '50px',
-                    '--duration': `${calculatedDuration +5}s`
-                  } as React.CSSProperties}>
-                  <div className={styles.slider_list}>
-                    {exp.stack.map((item, index) => {
-                      const { bgColor, hoverColor } = stackColors[item.id] || stackColors.default;
-                      return (
-                        <div key={item.id} className={styles.slider_item} style={{ '--position': `${index + 1}` } as React.CSSProperties}>
-                          <span style={{
-                            '--hover': `${bgColor}`,
-                            '--text-hover': `${hoverColor}`
-                          } as React.CSSProperties}>{item.name}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </article>
-          );
-        })}
-
-
+        {experiences.map((experience, index) => (
+          <ExperienceItem key={index} experience={experience} index={index} />
+        ))}
       </article>
     </section>
   );

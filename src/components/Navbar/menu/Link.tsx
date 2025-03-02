@@ -49,9 +49,8 @@ const CustomLink: React.FC<LinkProps> = ({ data, index, onClick }) => {
     }
   };
 
-
   return (
-    <Link href={path_url} onClick={onClick}>
+    <Link href={path_url} onClick={onClick} passHref>
       <motion.div
         onMouseEnter={manageMouseEnter}
         onMouseLeave={manageMouseLeave}
@@ -59,9 +58,8 @@ const CustomLink: React.FC<LinkProps> = ({ data, index, onClick }) => {
         {...mountAnim}
         custom={index}
         className={styles.el}
-
       >
-        <a className={styles.title_link}>{title}</a>
+        <div className={styles.title_link}>{title}</div>
         <div ref={outer} className={styles.outer}>
           <div ref={inner} className={styles.inner}>
             {Array.from({ length: 2 }).map((_, idx) => (
