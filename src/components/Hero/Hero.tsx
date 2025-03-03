@@ -1,67 +1,83 @@
-import React from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styles from './hero.module.scss'
 import LinkedinIcon from '@/icons/LinkedinIcon'
 import XIcon from '@/icons/XIcon'
 import GithubIcon from '@/icons/GithubIcon'
 import Link from 'next/link'
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
+
 const Hero = () => {
+  const [isReady, setIsReady] = useState(false);
+  const heroRef = useRef(null);
+  const isInView = useInView(heroRef, { once: true, amount: 0.3 });
+
+  useEffect(() => {
+    if (isInView) {
+      setTimeout(() => {
+        setIsReady(true);
+      }, 300); 
+    }
+  }, [isInView]);
+
   const titleVariants = {
     hidden: { clipPath: 'inset(100% 0 0 0)' },
     visible: {
-      clipPath: 'inset(0 0 0 0)', 
+      clipPath: 'inset(0 0 0 0)',
       transition: {
         duration: 1.5,
-        ease: [0.25, 0.46, 0.45, 0.94], 
-        delay: 0.2 
+        ease: [0.25, 0.46, 0.45, 0.94],
+        delay: 0.2
       }
     }
   }
 
   const paragraphVariants = {
-    hidden: { clipPath: 'inset(100% 0 0 0)' }, 
+    hidden: { clipPath: 'inset(100% 0 0 0)' },
     visible: {
       clipPath: 'inset(0 0 0 0)',
       transition: {
         duration: 1.5,
-        ease: [0.25, 0.46, 0.45, 0.94], 
-        delay: 0.8 
+        ease: [0.25, 0.46, 0.45, 0.94],
+        delay: 0.8
       }
     }
   }
 
   const imgVariants = {
-    hidden: { clipPath: 'inset(0 0 100% 0)' }, 
+    hidden: { clipPath: 'inset(0 0 100% 0)' },
     visible: {
       clipPath: 'inset(0 0 0 0)',
       transition: {
         duration: 1.2,
-        ease: [0.25, 0.46, 0.45, 0.94], 
-        delay: 0.5 
+        ease: [0.25, 0.46, 0.45, 0.94],
+        delay: 0.5
       }
     }
   }
+
   return (
-    <section className={styles.container}>
+    <section ref={heroRef} className={styles.container}>
       <motion.div
         className={styles.titleContainer}
         initial="hidden"
-        animate="visible"
+        animate={isReady ? "visible" : "hidden"}
         variants={titleVariants}
       >
         <h1 className={styles.title}>looking for a creative developer?
           <span>hi, nice to meet you!</span>
         </h1>
       </motion.div>
-      <motion.img 
-      initial="hidden"
-        animate="visible"
+      <motion.img
+        initial="hidden"
+        animate={isReady ? "visible" : "hidden"}
         variants={imgVariants}
-        src="/images/herp.webp" alt="fotografia de setup" />
+        src="/images/herp.webp"
+        alt="fotografia de setup"
+      />
       <motion.article
         className={styles.footer}
         initial="hidden"
-        animate="visible"
+        animate={isReady ? "visible" : "hidden"}
         variants={paragraphVariants}
       >
         <motion.p>
@@ -83,4 +99,4 @@ const Hero = () => {
   )
 }
 
-export default Hero
+export default Hero;

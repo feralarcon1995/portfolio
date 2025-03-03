@@ -13,7 +13,7 @@ interface MenuItem {
   path_url: string;
 }
 
-const menu: MenuItem[] = [
+export const menu: MenuItem[] = [
   {
     title: "Home",
     description: "let's Make This Crazy Idea Come True",

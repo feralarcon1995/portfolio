@@ -6,11 +6,11 @@ interface ButtonProps {
   text: string;
   color?: string;
   color_text?: string;
-  hover_color?:string;
+  hover_color?: string;
   font_size?: string;
 }
 
-export const RButton: React.FC<ButtonProps> = ({ text, color, color_text, font_size,hover_color }) => {
+export const RButton: React.FC<ButtonProps> = ({ text, color, color_text, font_size, hover_color }) => {
   return (
     <motion.button
       className={`${styles.btn} ${styles.btn_cta}`}
@@ -19,7 +19,7 @@ export const RButton: React.FC<ButtonProps> = ({ text, color, color_text, font_s
         scale: 1.02,
         transition: { duration: 0.5, ease: [0.4, 0, 0, 1] }
       }}
-      style={{ '--btn-color': color, '--text-color': color_text, '--font-size': font_size,'--hover-color':hover_color } as React.CSSProperties}
+      style={{ '--btn-color': color, '--text-color': color_text, '--font-size': font_size, '--hover-color': hover_color } as React.CSSProperties}
     >
       <motion.span
         className={styles.btn_cta_border}

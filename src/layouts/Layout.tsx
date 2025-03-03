@@ -3,12 +3,13 @@ import localFont from "next/font/local";
 import './Layout.module.scss';
 import Navbar from '@/components/Navbar/Navbar';
 import useLenis from '@/hooks/useLenis';
+import { useActiveSection } from '@/hooks/useActiveSection';
+import CircularText from '@/components/CircularText/CircularText';
 
 interface LayoutProps {
   children: React.ReactNode;
   title: string;
   description?: string;
-
 }
 
 const BricolageGrotestk = localFont({
@@ -28,21 +29,29 @@ const Monument = localFont({
   variable: "--font-monument",
   weight: "900",
 });
+
 export const Layout = ({ children, title, description }: LayoutProps) => {
   useLenis();
+  const activeSection = useActiveSection();
+
   return (
     <>
       <Head>
-        <title>{title}</title>
+        <title>{activeSection}</title>
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${Monument.variable} ${BricolageGrotestk.variable} ${FounderGrotestk.variable}`}>
+        <CircularText
+          text=" CONTACT * LET&#39;S TALK *"
+          onHover="pause"
+          spinDuration={10}
+          className="custom-class"
+        />
         <Navbar />
-        {children}
+        {children}  
       </main>
     </>
-
   )
 }

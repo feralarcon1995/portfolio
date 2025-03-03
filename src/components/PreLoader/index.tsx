@@ -1,7 +1,17 @@
-import TextPressure from "../TextPressure/TextPressure";
+import { motion, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
+import { useState, useEffect, useRef } from "react";
 import styles from "./preloader.module.scss";
 
-export default function PreLoader() {
+const TextPressure = dynamic(() => import("../TextPressure/TextPressure"), {
+  ssr: false
+});
+
+export default function PreLoader({ loading }: { loading: boolean }) {
+  const [message, setMessage] = useState("");
+  const [progress, setProgress] = useState(0);
+  const progressInterval = useRef<NodeJS.Timeout | null>(null);
+
   const generateMessage = () => {
     const messages = [
       "Welcome...",
@@ -17,23 +27,112 @@ export default function PreLoader() {
     return messages[randomNum];
   };
 
+  useEffect(() => {
+    if (loading) {
+      setMessage(generateMessage());
+      setProgress(0);
+
+      progressInterval.current = setInterval(() => {
+        setProgress(prev => {
+          const increment = Math.random() * 3 + 1;
+          const newProgress = Math.min(99, prev + increment);
+
+          if (newProgress > 95) {
+            return Math.min(99, prev + 0.5);
+          }
+
+          return newProgress;
+        });
+      }, 200);
+    } else {
+      setProgress(100);
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+    }
+
+    return () => {
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+    };
+  }, [loading]);
+
   return (
-    <div className={styles.preloader_overlay}>
-      <div className={styles.preloader_container}>
-        <div className={styles.preloader_spinner}></div>
-        <TextPressure
-          text={generateMessage()}
-          flex={true}
-          alpha={false}
-          stroke={false}
-          width={true}
-          weight={true}
-          italic={true}
-          textColor="#ffffff"
-          strokeColor="#ff0000"
-          minFontSize={36}
-        />
-      </div>
-    </div>
+    <AnimatePresence mode="wait">
+      {loading && (
+        <motion.div
+          className={styles.preloader_overlay}
+          initial={{ y: "-100%" }}
+          animate={{ y: 0 }}
+          exit={{ y: "-100%" }}
+          transition={{ duration: 0.8, ease: [0.65, 0, 0.35, 1] }}
+        >
+          <motion.div
+            className={styles.preloader_container}
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "-100%" }}
+            transition={{
+              duration: 0.8,
+              ease: [0.65, 0, 0.35, 1],
+              delay: 0.1
+            }}
+            style={{ pointerEvents: 'none' }}
+          >
+            <div className={styles.text_container} >
+              <TextPressure
+                text={message}
+                flex={true}
+                alpha={false}
+                stroke={false}
+                width={true}
+                weight={true}
+                italic={true}
+                textColor="#ffffff"
+                strokeColor="#ff0000"
+                minFontSize={100}
+              />
+            </div>
+
+            <div className={styles.percentage_container}>
+              {Math.floor(progress).toString().split('').map((digit, index) => (
+                <motion.span
+                  key={index}
+                  className={styles.percentage_digit}
+                  animate={{
+                    y: [0, -5, 0], 
+                    transition: {
+                      duration: 2.5,  
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      ease: "easeInOut", 
+                      delay: index * 0.1 
+                    }
+                  }}
+                >
+                  {digit}
+                </motion.span>
+              ))}
+              <motion.span
+                className={styles.percentage_symbol}
+                animate={{
+                  y: [0, -5, 0],  
+                  transition: {
+                    duration: 2.5,  
+                    repeat: Infinity,
+                    repeatType: "loop",
+                    ease: "easeInOut",
+                    delay: Math.floor(progress).toString().length * 0.1  
+                  }
+                }}
+              >
+                %
+              </motion.span>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

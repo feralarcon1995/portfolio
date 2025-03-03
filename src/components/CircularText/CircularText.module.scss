@@ -1,0 +1,78 @@
+.wrapper {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  width: 150px;
+  height: 150px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  mix-blend-mode: difference;
+}
+
+.circular_text {
+  position: absolute;
+  margin: 0 auto;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  font-weight: bold;
+  color: #fff;
+  font-weight: 900;
+  text-align: center;
+  cursor: pointer;
+  transform-origin: 50% 50%;
+  -webkit-transform-origin: 50% 50%;
+  mix-blend-mode: difference;
+}
+
+.circular_text span {
+  position: absolute;
+  display: inline-block;
+  font-family: var(--font-monument);
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  font-size: 18px;
+  transition: all 0.5s cubic-bezier(0, 0, 0, 1);
+}
+
+.icon_container {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 50%;
+  color: #000;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+    background-color: #f0f0f0;
+  }
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    width: 100px;
+    height: 100px;
+  }
+  .circular_text {
+    width: 100px;
+    height: 100px;
+  }
+  .circular_text span{
+    font-size: 14px;
+
+  }
+  .icon_container{
+    width: 40px;
+    height: 40px;
+  }
+}

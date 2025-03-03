@@ -171,10 +171,9 @@ const TextPressure: React.FC<TextPressureProps> = ({
       ref={containerRef}
       style={{
         position: "absolute",
-        width: "100%",
-        height: "100%",
         background: "transparent",
-        top:'50%'
+        width:"340px"
+        
       }}
     >
       <style>{`

@@ -1,24 +1,36 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { AppProps } from 'next/app';
-import '@/styles/globals.css'; 
+import '@/styles/globals.css';
 import PreLoader from '@/components/PreLoader';
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
+  const [showContent, setShowContent] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
-    // Gestionar eventos de navegación
-    const handleStart = (): void => setLoading(true);
-    const handleComplete = (): void => setLoading(false);
+    const handleStart = (): void => {
+      setLoading(true);
+      setShowContent(false);
+    };
 
-    // Carga inicial
+    const handleComplete = (): void => {
+      setTimeout(() => {
+        setLoading(false);
+        setTimeout(() => {
+          setShowContent(true);
+        }, 800); 
+      }, 3000);
+    };
+
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // Puedes ajustar este tiempo
+      setTimeout(() => {
+        setShowContent(true);
+      }, 800);
+    }, 3000);
 
-    // Suscribirse a eventos del router para navegaciones posteriores
     router.events.on('routeChangeStart', handleStart);
     router.events.on('routeChangeComplete', handleComplete);
     router.events.on('routeChangeError', handleComplete);
@@ -33,8 +45,8 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
   return (
     <>
-      {loading && <PreLoader />}
-      <Component {...pageProps} />
+      <PreLoader loading={loading} />
+      {showContent && <Component {...pageProps} />}
     </>
   );
 }
