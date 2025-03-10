@@ -4,6 +4,7 @@ import { motion, useAnimation, useInView } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import styles from './style.module.scss';
 import Magnet from '../Magnet/Magnet';
+import Image from 'next/image';
 
 const CustomCursor = dynamic(() => import('./CustomCursor'), { ssr: false });
 const Testimonials = dynamic(() => import('./Testimonials'), { ssr: false });
@@ -106,7 +107,13 @@ const ExperienceItem = ({ experience, index }: ExperienceItemProps) => {
         >
           {isInView && <CustomCursor text={`find out more about ${experience.company} here`} />}
           <div className={styles.image_container}>
-            <img src={experience.image} />
+            <Image
+              src={experience.image}
+              alt={`${experience.company} project image`}
+              width={500}
+              height={300}
+              style={{ objectFit: 'cover' }}
+            />
           </div>
           <div className={styles.text_cutout}>  {experience.company}</div>
         </motion.a>

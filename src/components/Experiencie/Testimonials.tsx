@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import styles from "./Testimonials.module.scss";
 
@@ -32,6 +32,10 @@ const Testimonials: React.FC<TestimonialsProps> = ({
   const [startY, setStartY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
+  const nextTestimonial = useCallback(() => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+  }, [testimonials.length]);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -53,11 +57,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({
     }, interval);
 
     return () => clearInterval(timer);
-  }, [autoPlay, interval, currentIndex, isTouching]);
-
-  const nextTestimonial = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-  };
+  }, [autoPlay, interval, currentIndex, isTouching, nextTestimonial]);
 
   const prevTestimonial = () => {
     setCurrentIndex((prevIndex) =>
@@ -91,26 +91,20 @@ const Testimonials: React.FC<TestimonialsProps> = ({
     const yValue = y.get();
 
     if (isMobile) {
-      // If swiped left by more than 50px, show next testimonial
       if (xValue < -50) {
         nextTestimonial();
       }
-      // If swiped right by more than 50px, show previous testimonial
       else if (xValue > 50) {
         prevTestimonial();
       }
-      // Reset the x position
       x.set(0);
     } else {
-      // If swiped up by more than 50px, show next testimonial
       if (yValue < -50) {
         nextTestimonial();
       }
-      // If swiped down by more than 50px, show previous testimonial
       else if (yValue > 50) {
         prevTestimonial();
       }
-      // Reset the y position
       y.set(0);
     }
   };

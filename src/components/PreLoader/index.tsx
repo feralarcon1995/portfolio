@@ -7,10 +7,11 @@ const TextPressure = dynamic(() => import("../TextPressure/TextPressure"), {
   ssr: false
 });
 
-export default function PreLoader({ loading }: { loading: boolean }) {
+export default function PreLoader({ onLoadingComplete }: { onLoadingComplete?: () => void }) {
   const [message, setMessage] = useState("");
   const [progress, setProgress] = useState(0);
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
+  const hasCompleted = useRef(false);
 
   const generateMessage = () => {
     const messages = [
@@ -28,39 +29,45 @@ export default function PreLoader({ loading }: { loading: boolean }) {
   };
 
   useEffect(() => {
-    if (loading) {
-      setMessage(generateMessage());
-      setProgress(0);
+    if (hasCompleted.current) return;
 
-      progressInterval.current = setInterval(() => {
-        setProgress(prev => {
-          const increment = Math.random() * 3 + 1;
-          const newProgress = Math.min(99, prev + increment);
+    setMessage(generateMessage());
+    setProgress(0);
 
-          if (newProgress > 95) {
-            return Math.min(99, prev + 0.5);
+    const totalDuration = 3000;
+    const intervalTime = 30;
+    const totalSteps = totalDuration / intervalTime;
+    const increment = 100 / totalSteps;
+
+    progressInterval.current = setInterval(() => {
+      setProgress(prev => {
+        const next = prev + increment;
+
+        if (next >= 100) {
+          if (progressInterval.current) {
+            clearInterval(progressInterval.current);
           }
+          if (onLoadingComplete && !hasCompleted.current) {
+            hasCompleted.current = true;
+            onLoadingComplete();
+          }
+          return 100;
+        }
 
-          return newProgress;
-        });
-      }, 200);
-    } else {
-      setProgress(100);
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
-      }
-    }
+        return next;
+      });
+    }, intervalTime);
 
     return () => {
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
     };
-  }, [loading]);
+  }, [onLoadingComplete]);
 
   return (
     <AnimatePresence mode="wait">
-      {loading && (
+      {progress < 100 && (
         <motion.div
           className={styles.preloader_overlay}
           initial={{ y: "-100%" }}
@@ -80,7 +87,7 @@ export default function PreLoader({ loading }: { loading: boolean }) {
             }}
             style={{ pointerEvents: 'none' }}
           >
-            <div className={styles.text_container} >
+            <div className={styles.text_container}>
               <TextPressure
                 text={message}
                 flex={true}
@@ -101,13 +108,13 @@ export default function PreLoader({ loading }: { loading: boolean }) {
                   key={index}
                   className={styles.percentage_digit}
                   animate={{
-                    y: [0, -5, 0], 
+                    y: [0, -5, 0],
                     transition: {
-                      duration: 2.5,  
+                      duration: 2.5,
                       repeat: Infinity,
                       repeatType: "loop",
-                      ease: "easeInOut", 
-                      delay: index * 0.1 
+                      ease: "easeInOut",
+                      delay: index * 0.1
                     }
                   }}
                 >
@@ -117,13 +124,13 @@ export default function PreLoader({ loading }: { loading: boolean }) {
               <motion.span
                 className={styles.percentage_symbol}
                 animate={{
-                  y: [0, -5, 0],  
+                  y: [0, -5, 0],
                   transition: {
-                    duration: 2.5,  
+                    duration: 2.5,
                     repeat: Infinity,
                     repeatType: "loop",
                     ease: "easeInOut",
-                    delay: Math.floor(progress).toString().length * 0.1  
+                    delay: Math.floor(progress).toString().length * 0.1
                   }
                 }}
               >

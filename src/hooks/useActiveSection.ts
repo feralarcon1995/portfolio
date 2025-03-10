@@ -1,53 +1,38 @@
 import { useState, useEffect } from 'react';
 
-interface Section {
-  id: string;
-  title: string;
-}
-
-const sections: Section[] = [
-  { id: 'hero', title: 'Fernando Alarcon | Portfolio' },
-  { id: 'about', title: 'About me | Fernando Alarcon' },
-  { id: 'experiencie', title: 'My experience | Fernando Alarcon' },
-  { id: 'projects', title: 'Some Projects | Fernando Alarcon' },
-  { id: 'contact', title: 'Get in touch | Fernando Alarcon' }
-];
-
 export const useActiveSection = () => {
-  const [activeSection, setActiveSection] = useState<string>(sections[0].title);
+  const [activeSection, setActiveSection] = useState('Home');
 
   useEffect(() => {
     const handleScroll = () => {
-      const sectionElements = sections.map(section =>
-        document.getElementById(section.id)
-      );
+      const sections = document.querySelectorAll('section[id]');
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
 
-      const viewportHeight = window.innerHeight;
-      let currentSection = sections[0].title;
+      if (scrollPosition < windowHeight * 0.5) {
+        setActiveSection('Home');
+        history.replaceState(null, '', '/');
+        return;
+      }
 
-      sectionElements.forEach((element, index) => {
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          const sectionTop = rect.top;
-          const sectionBottom = rect.bottom;
+      sections.forEach((section) => {
+        const sectionElement = section as HTMLElement;
+        const sectionTop = sectionElement.offsetTop;
+        const sectionHeight = sectionElement.clientHeight;
+        const sectionId = sectionElement.getAttribute('id') || '';
 
-          // Si la sección está visible en el viewport
-          if (sectionTop < viewportHeight / 2 && sectionBottom > viewportHeight / 2) {
-            currentSection = sections[index].title;
-          }
+        if (scrollPosition >= sectionTop - 100 && scrollPosition < sectionTop + sectionHeight - 100) {
+          setActiveSection(sectionId.charAt(0).toUpperCase() + sectionId.slice(1));
+          history.replaceState(null, '', `#${sectionId}`);
         }
       });
-
-      setActiveSection(currentSection);
-      // Actualizar el título del documento
-      document.title = currentSection;
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Llamada inicial
+    handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return activeSection;
-}; 
+};

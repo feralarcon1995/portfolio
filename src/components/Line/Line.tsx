@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import styles from "./line.module.scss";
 
 interface MouseEvent {
@@ -15,19 +15,18 @@ export default function Line() {
   let time = Math.PI / 2;
   let reqId: number | null = null;
 
-  useEffect(() => {
-    setPath(progress);
+  const setPath = useCallback((progress: number) => {
+    const width = window.innerWidth * 1;
+    path.current?.setAttributeNS(
+      "",
+      "d",
+      `M 0 50 Q ${width * 0.5} ${50 + progress} ${width} 50`
+    );
   }, []);
 
-  const setPath = (progress: number) => {
-    const width = window.innerWidth * 1;
-
-    path.current?.setAttributeNS(
-      null,
-      "d",
-      `M0 250 Q${width * x} ${250 + progress}, ${width} 250`
-    );
-  };
+  useEffect(() => {
+    setPath(progress);
+  }, [progress, setPath]);
 
   const lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
 

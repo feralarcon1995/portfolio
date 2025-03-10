@@ -8,7 +8,6 @@ import CircularText from '@/components/CircularText/CircularText';
 
 interface LayoutProps {
   children: React.ReactNode;
-  title: string;
   description?: string;
 }
 
@@ -30,7 +29,7 @@ const Monument = localFont({
   weight: "900",
 });
 
-export const Layout = ({ children, title, description }: LayoutProps) => {
+export const Layout = ({ children,  description }: LayoutProps) => {
   useLenis();
   const activeSection = useActiveSection();
 

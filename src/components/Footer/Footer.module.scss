@@ -1,0 +1,125 @@
+.footer {
+  width: 100%;
+  min-height: 60vh;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo {
+  padding: 2rem;
+  
+  h1 {
+    font-size: 5rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin: 0;
+    line-height: 1;
+    font-family: var(--font-monument);
+    text-transform: uppercase;
+  }
+}
+
+.footerContent {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.column {
+  flex: 1;
+  min-width: 200px;
+  padding: 2rem 1rem;
+  
+  h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-monument);
+    text-transform: uppercase;
+  }
+  
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .navLink {
+    font-size: 0.9rem;
+    color: #fff;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    font-family: var(--font-monument);
+    
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+  
+  .visitText, .address {
+    font-size: 0.9rem;
+    font-style: normal;
+    line-height: 1.5;
+    margin: 0;
+    font-weight: 400;
+    font-family: var(--font-monument);
+  }
+}
+
+.footerBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 1rem;
+  
+  .copyright, .motto, .copyrightYear {
+    margin: 0;
+    font-size: 0.75rem;
+    opacity: 0.8;
+    font-family: var(--font-monument);
+  }
+  
+  .footerBottomRight {
+    display: flex;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo h1 {
+    font-size: 2.2rem;
+    text-align: center;
+  }
+  
+  .footerContent {
+    flex-direction: column;
+  }
+  
+  .column {
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  
+  .footerBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    
+    .footerBottomRight {
+      width: 100%;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+}
