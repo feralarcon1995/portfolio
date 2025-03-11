@@ -7,9 +7,6 @@ import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'fra
 import Link from 'next/link';
 import styles from './projectdetail.module.scss';
 import useLenis from '@/hooks/useLenis';
-import { useInView } from 'framer-motion';
-import TextPressure from '@/components/TextPressure/TextPressure';
-import Squares from '@/components/Squares/Squares';
 
 export default function ProjectDetail() {
   const router = useRouter();
