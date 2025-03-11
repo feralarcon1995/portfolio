@@ -228,9 +228,19 @@ export default function Experience() {
         { id: 'bootstrap', name: 'BOOTSTRAP' },
         { id: 'css', name: 'CSS' },
       ],
-      testimonials: [],
-    },
-  ];
+
+      testimonials: [
+        {
+          id: "caplan",
+          author: "Diego Caplan",
+          position: "Founder ID for Ideas",
+          quote: "I had the pleasure of working with Fernando at the startup where he developed the frontend of our application. From day one, he showed great commitment and enthusiasm for learning, providing creative and effective solutions to the challenges of the project.\n\nDespite taking his first steps in the development world, his adaptability, proactive mindset and focus on quality made a big difference in the team. He was always willing to collaborate, receive feedback and continuously improve, which made him a key pillar in the development of the product.\n\nFernando not only brought technical frontend skills, but also left his mark with his excellent attitude and teamwork skills. I have no doubt that he will continue to grow and make a positive impact on any team he is on. Highly recommended!",
+          linkedin: "https://www.linkedin.com/in/caplandiego/",
+          color: "#a00f3b"
+        }
+      ]
+    }
+  ]
 
   const titleControls = useAnimation();
   const subTitleControls = useAnimation();

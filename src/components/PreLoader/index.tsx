@@ -34,7 +34,7 @@ export default function PreLoader({ onLoadingComplete }: { onLoadingComplete?: (
     setMessage(generateMessage());
     setProgress(0);
 
-    const totalDuration = 3000;
+    const totalDuration = 2000;
     const intervalTime = 30;
     const totalSteps = totalDuration / intervalTime;
     const increment = 100 / totalSteps;

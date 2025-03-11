@@ -10,6 +10,7 @@
   max-height: 100%;
   position: relative;
   overflow: hidden;
+
   .article {
     width: 90%;
     display: flex;
@@ -19,6 +20,7 @@
     gap: 20px;
     padding: 20px;
   }
+
   .image_container {
     width: 100%;
     height: 100vh;
@@ -44,9 +46,11 @@
     position: relative;
     color: var(--light);
     z-index: 1;
+
     h2 {
       font-size: 6rem;
     }
+
     h3 {
       position: absolute;
       font-size: 7rem;
@@ -93,6 +97,7 @@
     &:nth-of-type(1) {
       border-top: 1px solid var(--light);
     }
+
     .experience_description {
       font-size: 1.2rem;
       width: 100%;
@@ -131,6 +136,7 @@
   transition: background-size 0.3s;
   padding: 10px;
   width: max-content;
+
   svg {
     width: 20px;
     height: 20px;
@@ -145,6 +151,7 @@
   text-decoration: underline;
   background-size: 100% 100%;
   color: var(--black);
+
   & svg {
     opacity: 1;
     transform: translateY(0);
@@ -199,6 +206,7 @@
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-100%);
   }
@@ -394,11 +402,11 @@
   width: 100%;
 
   .experience_timeline_wrapper {
-    width: 55%;
+    width: 50%;
   }
 
   .testimonials_wrapper {
-    width: 40%;
+    width: 47%;
 
     h4 {
       text-transform: uppercase;
@@ -417,6 +425,7 @@
       padding: 10px;
     }
   }
+
   .grid_content {
     flex-direction: column;
     gap: 20px;
@@ -440,6 +449,7 @@
     .experience_details {
       gap: 1rem;
     }
+
     .image_container {
       height: 60vh;
     }
@@ -451,6 +461,23 @@
 }
 
 @media (max-width: 900px) {
+  .experience_title {
+    flex-direction: column;
+  }
+
+  .grid_content {
+    flex-direction: column;
+    gap: 20px;
+
+    .experience_timeline_wrapper {
+      width: 100%;
+    }
+
+    .testimonials_wrapper {
+      width: 100%;
+    }
+  }
+
   .experience_container {
     .experience_details {
       .experience_header {
@@ -458,10 +485,12 @@
           font-size: 2.4rem;
         }
       }
+
       .experience_description {
         font-size: 1.3rem;
       }
     }
+
     .article {
       width: 100%;
     }
@@ -471,14 +500,17 @@
     font-size: 6rem;
   }
 }
+
 @media (max-width: 700px) {
   .experience_container {
     .article {
       width: 100%;
       padding: 0;
     }
+
     .title {
       font-size: 1.7rem;
+
       h3 {
         position: absolute;
         font-size: 2rem;

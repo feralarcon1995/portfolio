@@ -4,6 +4,7 @@ import { mountAnim, rotateX } from '../anim';
 import { useRef } from 'react';
 import Link from 'next/link';
 import { RButton } from '@/components/Button/RButton';
+import { useRouter } from 'next/router';
 
 interface LinkProps {
   data: {
@@ -19,6 +20,27 @@ const CustomLink: React.FC<LinkProps> = ({ data, index, onClick }) => {
   const { title, description, path_url } = data;
   const outer = useRef<HTMLDivElement | null>(null);
   const inner = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const isProjectPage = window.location.pathname.startsWith('/projects/');
+
+    if (isProjectPage && path_url.startsWith('#')) {
+      router.push('/').then(() => {
+        setTimeout(() => {
+          const element = document.querySelector(path_url);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      });
+    } else {
+      router.push(path_url);
+    }
+
+    onClick();
+  };
 
   const manageMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     const bounds = e.currentTarget.getBoundingClientRect();
@@ -50,7 +72,7 @@ const CustomLink: React.FC<LinkProps> = ({ data, index, onClick }) => {
   };
 
   return (
-    <Link href={path_url} onClick={onClick} passHref>
+    <Link href={path_url} onClick={handleClick} passHref>
       <motion.div
         onMouseEnter={manageMouseEnter}
         onMouseLeave={manageMouseLeave}

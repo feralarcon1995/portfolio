@@ -9,6 +9,7 @@ import CircularText from '@/components/CircularText/CircularText';
 interface LayoutProps {
   children: React.ReactNode;
   description?: string;
+  title?: string;
 }
 
 const BricolageGrotestk = localFont({
@@ -29,14 +30,16 @@ const Monument = localFont({
   weight: "900",
 });
 
-export const Layout = ({ children,  description }: LayoutProps) => {
+export const Layout = ({ children, title, description }: LayoutProps) => {
   useLenis();
   const activeSection = useActiveSection();
 
   return (
     <>
       <Head>
-        <title>{activeSection}</title>
+        <title>
+          {title ? `${title} | ${activeSection}` : activeSection}
+        </title>
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -49,7 +52,7 @@ export const Layout = ({ children,  description }: LayoutProps) => {
           className="custom-class"
         />
         <Navbar />
-        {children}  
+        {children}
       </main>
     </>
   )
