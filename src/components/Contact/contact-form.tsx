@@ -401,45 +401,47 @@ const ContactForm = memo(() => {
           </motion.button>
 
           <AnimatePresence>
-            {isSubmitted && (
-              <motion.div
-                className={styles.success_message}
-                variants={successVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                key="success-message"
-              >
+            <div className={styles.success_wrapper}>
+              {isSubmitted && (
                 <motion.div
-                  className={styles.success_icon}
-                  initial={{ scale: 0 }}
-                  animate={{
-                    scale: 1,
-                    transition: { delay: 0.2, type: "spring", stiffness: 300 }
-                  }}
+                  className={styles.success_message}
+                  variants={successVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  key="success-message"
                 >
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <motion.path
-                      d="M5 13L9 17L19 7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ duration: 0.5, delay: 0.3 }}
-                    />
-                  </svg>
+                  <motion.div
+                    className={styles.success_icon}
+                    initial={{ scale: 0 }}
+                    animate={{
+                      scale: 1,
+                      transition: { delay: 0.2, type: "spring", stiffness: 300 }
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <motion.path
+                        d="M5 13L9 17L19 7"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                      />
+                    </svg>
+                  </motion.div>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    Thank you! Your message has been sent successfully.
+                  </motion.p>
                 </motion.div>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  Thank you! Your message has been sent successfully.
-                </motion.p>
-              </motion.div>
-            )}
+              )}
+            </div>
           </AnimatePresence>
         </motion.form>
       </motion.div>
