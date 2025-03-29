@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import Lenis from '@studio-freight/lenis';
-import { motion, useAnimation, useInView, LazyMotion, domAnimation } from 'framer-motion';
+import { motion, useAnimation, useInView, LazyMotion, domAnimation, useTransform, useScroll } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import styles from './style.module.scss';
 import Magnet from '../Magnet/Magnet';
@@ -254,24 +254,20 @@ export default function Experience() {
       ]
     }
   ], []);
-
-  const titleControls = useAnimation();
-  const subTitleControls = useAnimation();
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
 
-  // Use IntersectionObserver instead of scroll event for title animations
   const titleRef = useRef<HTMLDivElement>(null);
-  const isTitleInView = useInView(titleRef, { once: false, amount: 0.3 });
+  const { scrollYProgress } = useScroll({
+    target: titleRef,
+    offset: ["start end", "end start"]
+  });
 
-  useEffect(() => {
-    if (isTitleInView) {
-      titleControls.start({ y: 0, opacity: 1, transition: { duration: 0.6 } });
-      subTitleControls.start({ x: 0, opacity: 1, transition: { duration: 0.6, delay: 0.2 } });
-    }
-  }, [isTitleInView, titleControls, subTitleControls]);
+  const h2Y = useTransform(scrollYProgress, [0, 0.5], [-100, 0]);
+  const h2Opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+  const h3X = useTransform(scrollYProgress, [0.1, 0.6], [-200, 0]);
+  const h3Opacity = useTransform(scrollYProgress, [0.1, 0.6], [0, 1]);
 
-  // Optimized scroll handler with debouncing
   const handleScroll = useCallback(() => {
     if (!sectionRef.current || hasScrolled) return;
 
@@ -284,19 +280,17 @@ export default function Experience() {
   }, [hasScrolled]);
 
   useEffect(() => {
-    // Optimized Lenis configuration
     const lenis = new Lenis({
-      duration: 0.8, // Reduced from 1.0 for better performance
+      duration: 0.8,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      wheelMultiplier: 0.7, // Lower value for less computation
-      lerp: 0.06, // Lower value for smoother performance
+      wheelMultiplier: 0.7,
+      lerp: 0.06,
       syncTouch: true,
     });
 
-    // More efficient throttling
     let lastScrollTime = 0;
-    const scrollThreshold = 50; // ms between scroll events
+    const scrollThreshold = 50;
 
     const scrollListener = () => {
       const now = performance.now();
@@ -328,11 +322,23 @@ export default function Experience() {
           <motion.article
             ref={titleRef}
             className={styles.title}
-            initial={{ y: -50, opacity: 0 }}
-            animate={titleControls}
           >
-            <motion.h2>My Journey: What I&apos;ve Learned in the Way</motion.h2>
-            <motion.h3 animate={subTitleControls}>My Journey: What I&apos;ve Learned in the Way</motion.h3>
+            <motion.h2
+              style={{
+                y: h2Y,
+                opacity: h2Opacity
+              }}
+            >
+              My Journey: What I&apos;ve Learned in the Way
+            </motion.h2>
+            <motion.h3
+              style={{
+                x: h3X,
+                opacity: h3Opacity
+              }}
+            >
+              My Journey: What I&apos;ve Learned in the Way
+            </motion.h3>
           </motion.article>
 
           {experiences.map((experience, index) => (

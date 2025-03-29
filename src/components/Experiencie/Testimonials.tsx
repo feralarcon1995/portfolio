@@ -32,6 +32,9 @@ const Testimonials: React.FC<TestimonialsProps> = ({
   const [startY, setStartY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Check if we have more than one testimonial
+  const hasMultipleTestimonials = testimonials.length > 1;
+
   const nextTestimonial = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
   }, [testimonials.length]);
@@ -50,14 +53,14 @@ const Testimonials: React.FC<TestimonialsProps> = ({
   }, []);
 
   useEffect(() => {
-    if (!autoPlay || isTouching) return;
+    if (!autoPlay || isTouching || !hasMultipleTestimonials) return;
 
     const timer = setInterval(() => {
       nextTestimonial();
     }, interval);
 
     return () => clearInterval(timer);
-  }, [autoPlay, interval, currentIndex, isTouching, nextTestimonial]);
+  }, [autoPlay, interval, currentIndex, isTouching, nextTestimonial, hasMultipleTestimonials]);
 
   const prevTestimonial = () => {
     setCurrentIndex((prevIndex) =>
@@ -131,10 +134,10 @@ const Testimonials: React.FC<TestimonialsProps> = ({
               className={styles.testimonial}
               style={{
                 backgroundColor: testimonials[currentIndex].color || '#2D2D3A',
-                opacity,
-                scale,
-                x: isMobile ? x : 0,
-                y: isMobile ? 0 : y,
+                opacity: hasMultipleTestimonials ? opacity : 1,
+                scale: hasMultipleTestimonials ? scale : 1,
+                x: hasMultipleTestimonials && isMobile ? x : 0,
+                y: hasMultipleTestimonials && !isMobile ? y : 0,
               }}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -143,9 +146,9 @@ const Testimonials: React.FC<TestimonialsProps> = ({
                 duration: 0.4,
                 ease: [0.25, 0.1, 0.25, 1.0]
               }}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
+              onTouchStart={hasMultipleTestimonials ? handleTouchStart : undefined}
+              onTouchMove={hasMultipleTestimonials ? handleTouchMove : undefined}
+              onTouchEnd={hasMultipleTestimonials ? handleTouchEnd : undefined}
             >
               <div className={styles.quoteContainer}>
                 <svg className={styles.quoteIcon} width="32" height="24" viewBox="0 0 32 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -178,55 +181,59 @@ const Testimonials: React.FC<TestimonialsProps> = ({
           </AnimatePresence>
         </div>
 
-        <div className={styles.navigationColumn}>
-          <motion.button
-            className={styles.navButton}
-            onClick={prevTestimonial}
-            aria-label="Previous testimonial"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            {isMobile ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg> : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="18 15 12 9 6 15"></polyline>
-            </svg>}
+        {hasMultipleTestimonials && (
+          <div className={styles.navigationColumn}>
+            <motion.button
+              className={styles.navButton}
+              onClick={prevTestimonial}
+              aria-label="Previous testimonial"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {isMobile ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg> : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+              </svg>}
+            </motion.button>
 
-          </motion.button>
+            <div className={styles.indicators}>
+              {testimonials.map((_, index) => (
+                <motion.button
+                  key={index}
+                  className={`${styles.indicator} ${index === currentIndex ? styles.active : ""}`}
+                  onClick={() => setCurrentIndex(index)}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                />
+              ))}
+            </div>
 
-          <div className={styles.indicators}>
-            {testimonials.map((_, index) => (
-              <motion.button
-                key={index}
-                className={`${styles.indicator} ${index === currentIndex ? styles.active : ""}`}
-                onClick={() => setCurrentIndex(index)}
-                aria-label={`Go to testimonial ${index + 1}`}
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-              />
-            ))}
+            <motion.button
+              className={styles.navButton}
+              onClick={nextTestimonial}
+              aria-label="Next testimonial"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {isMobile ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 6 15 12 9 18"></polyline>
+              </svg> : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>}
+            </motion.button>
           </div>
+        )}
+      </div>
 
-          <motion.button
-            className={styles.navButton}
-            onClick={nextTestimonial}
-            aria-label="Next testimonial"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            {isMobile ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 6 15 12 9 18"></polyline>
-            </svg> : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>}
-
-          </motion.button>
+      {hasMultipleTestimonials && (
+        <div className={styles.swipeIndicator}>
+          <span>Swipe {isMobile ? 'left/right' : 'up/down'} to navigate testimonials</span>
         </div>
-      </div>
-
-      <div className={styles.swipeIndicator}>
-        <span>Swipe {isMobile ? 'left/right' : 'up/down'} to navigate testimonials</span>
-      </div>
+      )}
     </div>
   );
 };

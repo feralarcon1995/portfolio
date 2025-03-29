@@ -42,18 +42,19 @@ export default function PreLoader({ onLoadingComplete }: { onLoadingComplete?: (
     progressInterval.current = setInterval(() => {
       setProgress(prev => {
         const next = prev + increment;
-
         if (next >= 100) {
           if (progressInterval.current) {
             clearInterval(progressInterval.current);
           }
+
           if (onLoadingComplete && !hasCompleted.current) {
             hasCompleted.current = true;
-            onLoadingComplete();
+            setTimeout(() => {
+              onLoadingComplete();
+            }, 0);
           }
           return 100;
         }
-
         return next;
       });
     }, intervalTime);

@@ -84,10 +84,10 @@ const TextPressure: React.FC<TextPressureProps> = ({
   const setSize = useCallback(() => {
     if (!containerRef.current || !titleRef.current) return;
 
-    const { width: containerW, height: containerH } =
-      containerRef.current.getBoundingClientRect();
+    const { width: containerW, height: containerH } = containerRef.current.getBoundingClientRect(); 
 
-    let newFontSize = containerW / (chars.length / 2);
+    const charLength = Math.max(chars.length, 1); 
+    let newFontSize = containerW / (charLength / 2);
     newFontSize = Math.max(newFontSize, minFontSize);
 
     setFontSize(newFontSize);
@@ -99,7 +99,7 @@ const TextPressure: React.FC<TextPressureProps> = ({
       const textRect = titleRef.current.getBoundingClientRect();
 
       if (scale && textRect.height > 0) {
-        const yRatio = containerH / textRect.height;
+        const yRatio = containerH / textRect.height; // Use containerH here
         setScaleY(yRatio);
         setLineHeight(yRatio);
       }
@@ -172,8 +172,8 @@ const TextPressure: React.FC<TextPressureProps> = ({
       style={{
         position: "absolute",
         background: "transparent",
-        width:"340px"
-        
+        width: "340px"
+
       }}
     >
       <style>{`

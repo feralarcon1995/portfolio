@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useRef, useState, useCallback, memo } from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useState, useCallback, memo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import styles from "./contact-form.module.scss";
 import emailjs from "@emailjs/browser";
 import Squares from "../Squares/Squares";
 import Magnet from "../Magnet/Magnet";
+import ReCAPTCHA from "react-google-recaptcha";
 
 interface FormData {
   name: string;
@@ -22,7 +23,9 @@ const ContactForm = memo(() => {
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [captchaError, setCaptchaError] = useState<string>("");
   const formRef = useRef<HTMLFormElement>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -59,32 +62,52 @@ const ContactForm = memo(() => {
 
     if (!validateForm()) return;
 
-    setIsSubmitting(true);
+    if (recaptchaRef.current) {
+      try {
+        setIsSubmitting(true);
+        const captchaValue = await recaptchaRef.current.executeAsync();
 
-    try {
-      if (!formRef.current) {
-        return;
+        if (!captchaValue) {
+          setCaptchaError("reCAPTCHA verification failed. Please try again.");
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (!formRef.current) {
+          setIsSubmitting(false);
+          return;
+        }
+
+        const templateParams = {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          "g-recaptcha-response": captchaValue
+        };
+
+        await emailjs.send(
+          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
+          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "",
+          templateParams,
+          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
+        );
+
+        setIsSubmitted(true);
+        setFormData({ name: "", email: "", message: "" });
+
+        recaptchaRef.current.reset();
+
+        setTimeout(() => {
+          setIsSubmitted(false);
+        }, 5000); // Extended time to appreciate the animation
+      } catch (error: unknown) {
+        console.error("Error sending email or verifying reCAPTCHA:", error);
+        setCaptchaError("An error occurred. Please try again later.");
+      } finally {
+        setIsSubmitting(false);
       }
-
-      await emailjs.sendForm(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "",
-        formRef.current,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
-      );
-
-      setIsSubmitted(true);
-      setFormData({ name: "", email: "", message: "" });
-
-      setTimeout(() => {
-        setIsSubmitted(false);
-      }, 3000);
-    } catch (error: unknown) {
-      console.error("Error sending email:", error);
-    } finally {
-      setIsSubmitting(false);
     }
-  }, [validateForm]);
+  }, [validateForm, formData]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -109,8 +132,78 @@ const ContactForm = memo(() => {
     },
   };
 
+
+  const buttonVariants = {
+    idle: {
+      backgroundColor: "#fff",
+      color: "#000",
+      borderColor: "transparent",
+      scale: 1
+    },
+    sending: {
+      backgroundColor: "#f8f8f8",
+      color: "#666",
+      borderColor: "#eee",
+      transition: {
+        duration: 0.3
+      }
+    },
+    hover: {
+      scale: 1.05,
+      backgroundColor: "#000",
+      color: "#fff",
+      borderColor: "#fff",
+      borderWidth: "1px",
+      borderStyle: "solid",
+      transition: { duration: 0.3 }
+    },
+    tap: {
+      scale: 0.98,
+      transition: { duration: 0.1 }
+    }
+  };
+
+  const loadingDotsVariants = {
+    animate: {
+      opacity: [0, 1, 0],
+      transition: {
+        duration: 1.5,
+        repeat: Infinity,
+        repeatType: "loop" as const
+      }
+    }
+  };
+
+  const successVariants = {
+    hidden: {
+      opacity: 0,
+      y: 30,
+      scale: 0.8
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 200,
+        duration: 0.8
+      }
+    },
+    exit: {
+      opacity: 0,
+      y: -30,
+      scale: 0.8,
+      transition: {
+        duration: 0.5,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-    <section className={styles.contact_container} id="#contact-form">
+    <section className={styles.contact_container} id="contact-form">
       <div className={styles.background_wrapper}>
         <Squares
           speed={0.5}
@@ -183,25 +276,131 @@ const ContactForm = memo(() => {
               {errors.message && <span className={styles.error_message}>{errors.message}</span>}
             </motion.div>
           </Magnet>
+
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+            size="invisible"
+          />
+
+          {captchaError && (
+            <motion.div className={styles.error_message} variants={itemVariants}>
+              {captchaError}
+            </motion.div>
+          )}
+
           <motion.button
             type="submit"
             className={styles.submit_button}
             disabled={isSubmitting}
-            whileHover="hover"
-            whileTap="tap"
+            variants={buttonVariants}
+            initial="idle"
+            animate={isSubmitting ? "sending" : "idle"}
+            whileHover={isSubmitting ? undefined : "hover"}
+            whileTap={isSubmitting ? undefined : "tap"}
           >
-            {isSubmitting ? "Sending..." : "Send Message"}
+            {isSubmitting ? (
+              <motion.div className={styles.sending_container}>
+                <motion.div
+                  className={styles.loading_circle}
+                  animate={{
+                    rotate: 360,
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                />
+                <motion.div className={styles.sending_text}>
+                  <span>Sending</span>
+                  <motion.span
+                    className={styles.loading_dot}
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{
+                      opacity: [0, 1, 0],
+                      y: [0, -5, 0]
+                    }}
+                    transition={{
+                      duration: 1.2,
+                      repeat: Infinity,
+                      delay: 0
+                    }}
+                  >.</motion.span>
+                  <motion.span
+                    className={styles.loading_dot}
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{
+                      opacity: [0, 1, 0],
+                      y: [0, -5, 0]
+                    }}
+                    transition={{
+                      duration: 1.2,
+                      repeat: Infinity,
+                      delay: 0.2
+                    }}
+                  >.</motion.span>
+                  <motion.span
+                    className={styles.loading_dot}
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{
+                      opacity: [0, 1, 0],
+                      y: [0, -5, 0]
+                    }}
+                    transition={{
+                      duration: 1.2,
+                      repeat: Infinity,
+                      delay: 0.4
+                    }}
+                  >.</motion.span>
+                </motion.div>
+              </motion.div>
+            ) : (
+              "Send Message"
+            )}
           </motion.button>
-          {isSubmitted && (
-            <motion.div
-              className={styles.success_message}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-            >
-              Thank you! Your message has been sent successfully.
-            </motion.div>
-          )}
+
+          <AnimatePresence>
+            {isSubmitted && (
+              <motion.div
+                className={styles.success_message}
+                variants={successVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                key="success-message"
+              >
+                <motion.div
+                  className={styles.success_icon}
+                  initial={{ scale: 0 }}
+                  animate={{
+                    scale: 1,
+                    transition: { delay: 0.2, type: "spring", stiffness: 300 }
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <motion.path
+                      d="M5 13L9 17L19 7"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
+                    />
+                  </svg>
+                </motion.div>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  Thank you! Your message has been sent successfully.
+                </motion.p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.form>
       </motion.div>
     </section>
