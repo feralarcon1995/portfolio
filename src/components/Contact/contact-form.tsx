@@ -77,56 +77,83 @@ const ContactForm = memo(() => {
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submission started");
 
-    if (!validateForm()) return;
-
-    if (recaptchaRef.current) {
-      try {
-        setIsSubmitting(true);
-        const captchaValue = await recaptchaRef.current.executeAsync();
-        console.log("Captcha Value:", captchaValue);
-
-        if (!captchaValue) {
-          setCaptchaError("reCAPTCHA verification failed. Please try again.");
-          setIsSubmitting(false);
-          return;
-        }
-
-        if (!formRef.current) {
-          setIsSubmitting(false);
-          return;
-        }
-
-        const templateParams = {
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          "g-recaptcha-response": captchaValue
-        };
-
-        await emailjs.send(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
-          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "",
-          templateParams,
-          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
-        );
-
-        setIsSubmitted(true);
-        setFormData({ name: "", email: "", message: "" });
-
-        recaptchaRef.current.reset();
-
-        setTimeout(() => {
-          setIsSubmitted(false);
-        }, 5000);
-      } catch (error: unknown) {
-        console.error("Error sending email or verifying reCAPTCHA:", error);
-        setCaptchaError("An error occurred. Please try again later.");
-      } finally {
-        setIsSubmitting(false);
-      }
+    if (!validateForm()) {
+      console.log("Form validation failed");
+      return;
     }
-  }, [validateForm, formData]);
+
+    setIsSubmitting(true);
+
+    try {
+      let captchaValue;
+
+      if (isMobile) {
+        // En móviles, obtén el valor directamente
+        captchaValue = recaptchaRef.current?.getValue();
+        console.log("Mobile captcha value:", captchaValue);
+
+        // Si no hay valor, es posible que el usuario no haya marcado la casilla
+        if (!captchaValue) {
+          setCaptchaError("Please check the reCAPTCHA box");
+          setIsSubmitting(false);
+          return;
+        }
+      } else {
+        // En escritorio, usa executeAsync para el reCAPTCHA invisible
+        captchaValue = await recaptchaRef.current?.executeAsync();
+        console.log("Desktop captcha execution:", captchaValue);
+      }
+
+      if (!captchaValue) {
+        setCaptchaError("reCAPTCHA verification failed. Please try again.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!formRef.current) {
+        console.log("Form ref is null");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const templateParams = {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        "g-recaptcha-response": captchaValue
+      };
+
+      console.log("Sending email with params:", templateParams);
+
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "",
+        templateParams,
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
+      );
+
+      console.log("Email sent successfully");
+      setIsSubmitted(true);
+      setFormData({ name: "", email: "", message: "" });
+
+      recaptchaRef.current?.reset();
+
+      setTimeout(() => {
+        setIsSubmitted(false);
+      }, 5000);
+    } catch (error: unknown) {
+      console.error("Error sending email:", error);
+      if (error instanceof Error) {
+        setCaptchaError(`Error: ${error.message}`);
+      } else {
+        setCaptchaError("An unknown error occurred. Please try again later.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [validateForm, formData, isMobile]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -410,6 +437,18 @@ const ContactForm = memo(() => {
                 >
                   Thank you! Your message has been sent successfully.
                 </motion.p>
+              </motion.div>
+            )}
+
+            {isMobile && captchaError && (
+              <motion.div className={styles.error_message} variants={itemVariants}>
+                {captchaError}
+              </motion.div>
+            )}
+
+            {isMobile && isSubmitting && (
+              <motion.div className={styles.info_message} variants={itemVariants}>
+                Verifying reCAPTCHA and sending message...
               </motion.div>
             )}
           </AnimatePresence>
