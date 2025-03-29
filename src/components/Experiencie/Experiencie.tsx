@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import Lenis from '@studio-freight/lenis';
-import { motion, useAnimation, useInView } from 'framer-motion';
+import { motion, useAnimation, useInView, LazyMotion, domAnimation } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import styles from './style.module.scss';
 import Magnet from '../Magnet/Magnet';
@@ -63,20 +63,32 @@ const itemVariants = {
   },
 };
 
-const ExperienceItem = ({ experience, index }: ExperienceItemProps) => {
+const ExperienceItem = React.memo(function ExperienceItem({ experience, index }: ExperienceItemProps) {
   const expRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(expRef, { once: true, amount: 0.3 });
   const controls = useAnimation();
   const stackControls = useAnimation();
 
+  const startAnimations = useCallback(() => {
+    controls.start('visible');
+    const timer = setTimeout(() => {
+      stackControls.start('visible');
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [controls, stackControls]);
+
   useEffect(() => {
     if (isInView) {
-      controls.start('visible');
-      setTimeout(() => {
-        stackControls.start('visible');
-      }, 600);
+      startAnimations();
     }
-  }, [isInView, controls, stackControls]);
+  }, [isInView, startAnimations]);
+
+  const filteredTestimonials = useMemo(() =>
+    experience.testimonials.filter((t: Testimonial) => Object.keys(t).length > 0),
+    [experience.testimonials]
+  );
+
+  const hasTestimonials = filteredTestimonials.length > 0;
 
   return (
     <motion.article
@@ -95,7 +107,8 @@ const ExperienceItem = ({ experience, index }: ExperienceItemProps) => {
           <Magnet padding={50} disabled={false} magnetStrength={10}>
             <motion.p className={styles.experience_description} variants={itemVariants}>
               {experience.description}
-            </motion.p></Magnet>
+            </motion.p>
+          </Magnet>
         </div>
         <motion.a
           href={experience.link_company}
@@ -113,9 +126,13 @@ const ExperienceItem = ({ experience, index }: ExperienceItemProps) => {
               width={500}
               height={300}
               style={{ objectFit: 'cover' }}
+              loading="lazy"
+              sizes="(max-width: 768px) 100vw, 500px"
+              placeholder="blur"
+              blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MDAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlZWVlIi8+PC9zdmc+"
             />
           </div>
-          <div className={styles.text_cutout}>  {experience.company}</div>
+          <div className={styles.text_cutout}>{experience.company}</div>
         </motion.a>
       </motion.div>
       <div className={styles.grid_content}>
@@ -124,12 +141,8 @@ const ExperienceItem = ({ experience, index }: ExperienceItemProps) => {
         </motion.div>
         <motion.div variants={itemVariants} className={styles.testimonials_wrapper}>
           <motion.h4 variants={itemVariants}>what the people I work with say</motion.h4>
-          {experience.testimonials.filter((t: Testimonial) => Object.keys(t).length > 0).length > 0 ? (
-            isInView && (
-              <Testimonials
-                testimonials={experience.testimonials.filter((t: Testimonial) => Object.keys(t).length > 0)}
-              />
-            )
+          {hasTestimonials ? (
+            isInView && <Testimonials testimonials={filteredTestimonials} />
           ) : (
             <motion.p className={styles.no_testimonials} variants={itemVariants}>
               No testimonials available.
@@ -139,10 +152,10 @@ const ExperienceItem = ({ experience, index }: ExperienceItemProps) => {
       </div>
     </motion.article>
   );
-};
+});
 
 export default function Experience() {
-  const experiences: Experience[] = [
+  const experiences = useMemo(() => [
     {
       title: 'Fullstack Developer',
       company: 'Banco Comafi',
@@ -240,61 +253,97 @@ export default function Experience() {
         }
       ]
     }
-  ]
+  ], []);
 
   const titleControls = useAnimation();
   const subTitleControls = useAnimation();
-
   const sectionRef = useRef<HTMLDivElement | null>(null);
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  // Use IntersectionObserver instead of scroll event for title animations
+  const titleRef = useRef<HTMLDivElement>(null);
+  const isTitleInView = useInView(titleRef, { once: false, amount: 0.3 });
+
   useEffect(() => {
+    if (isTitleInView) {
+      titleControls.start({ y: 0, opacity: 1, transition: { duration: 0.6 } });
+      subTitleControls.start({ x: 0, opacity: 1, transition: { duration: 0.6, delay: 0.2 } });
+    }
+  }, [isTitleInView, titleControls, subTitleControls]);
+
+  // Optimized scroll handler with debouncing
+  const handleScroll = useCallback(() => {
+    if (!sectionRef.current || hasScrolled) return;
+
+    const sectionTop = sectionRef.current.getBoundingClientRect().top;
+    const windowHeight = window.innerHeight;
+
+    if (sectionTop < windowHeight) {
+      setHasScrolled(true);
+    }
+  }, [hasScrolled]);
+
+  useEffect(() => {
+    // Optimized Lenis configuration
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 0.8, // Reduced from 1.0 for better performance
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 0.7, // Lower value for less computation
+      lerp: 0.06, // Lower value for smoother performance
+      syncTouch: true,
     });
 
-    const handleScroll = () => {
-      if (sectionRef.current) {
-        const sectionTop = sectionRef.current.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        const scrollY = window.scrollY;
-        const scrollX = window.scrollX;
+    // More efficient throttling
+    let lastScrollTime = 0;
+    const scrollThreshold = 50; // ms between scroll events
 
-        titleControls.start({
-          y: sectionTop * 0.1,
-          opacity: scrollY > sectionTop - windowHeight ? 1 : 0,
-        });
+    const scrollListener = () => {
+      const now = performance.now();
+      if (now - lastScrollTime < scrollThreshold) return;
+      lastScrollTime = now;
 
-        subTitleControls.start({
-          x: sectionTop * 0.1,
-          opacity: scrollX > sectionTop - windowHeight ? 1 : 0,
-        });
-      }
+      requestAnimationFrame(handleScroll);
     };
 
-    lenis.on('scroll', handleScroll);
+    lenis.on('scroll', scrollListener);
+
     const animate = (time: number) => {
       lenis.raf(time);
       requestAnimationFrame(animate);
     };
-    requestAnimationFrame(animate);
+
+    const animationFrame = requestAnimationFrame(animate);
 
     return () => {
       lenis.destroy();
+      cancelAnimationFrame(animationFrame);
     };
-  }, [titleControls, subTitleControls]);
+  }, [handleScroll]);
 
   return (
-    <section ref={sectionRef} className={styles.experience_container} id="experiencie">
-      <article className={styles.article}>
-        <motion.article className={styles.title} initial={{ y: -100, opacity: 0 }} animate={titleControls}>
-          <motion.h2 animate={titleControls}>My Journey: What I&apos;ve Learned in the Way</motion.h2>
-          <motion.h3 animate={subTitleControls}>My Journey: What I&apos;ve Learned in the Way</motion.h3>
-        </motion.article>
+    <LazyMotion features={domAnimation}>
+      <section ref={sectionRef} className={styles.experience_container} id="experiencie">
+        <article className={styles.article}>
+          <motion.article
+            ref={titleRef}
+            className={styles.title}
+            initial={{ y: -50, opacity: 0 }}
+            animate={titleControls}
+          >
+            <motion.h2>My Journey: What I&apos;ve Learned in the Way</motion.h2>
+            <motion.h3 animate={subTitleControls}>My Journey: What I&apos;ve Learned in the Way</motion.h3>
+          </motion.article>
 
-        {experiences.map((experience, index) => (
-          <ExperienceItem key={index} experience={experience} index={index} />
-        ))}
-      </article>
-    </section>
+          {experiences.map((experience, index) => (
+            <ExperienceItem
+              key={experience.company}
+              experience={experience}
+              index={index}
+            />
+          ))}
+        </article>
+      </section>
+    </LazyMotion>
   );
 }

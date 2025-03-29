@@ -1,0 +1,72 @@
+.projectImagesContainer {
+  width: 100%;
+  margin: 6rem 0;
+  overflow: hidden;
+  position: relative;
+
+  // Ajustar altura para mobile
+  min-height: 120vh;
+
+  @media (max-width: 600px) {
+    min-height: 100vh; // Se ajusta mejor al viewport en móviles
+  }
+}
+
+.imagesWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  position: sticky;
+  top: 10vh;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: 2rem; // Reducir el espacio entre imágenes
+  }
+}
+
+.imageContainer {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease-out;
+  will-change: transform, opacity;
+
+  &:hover {
+    transform: translateY(-10px);
+  }
+
+  &:first-child {
+    margin-top: 4rem;
+
+    @media (max-width: 600px) {
+      margin-top: 0;
+    }
+  }
+
+  &:last-child {
+    margin-top: -2rem;
+
+    @media (max-width: 600px) {
+      margin-top: 0;
+    }
+  }
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 90vh; // Permitir que la imagen se expanda completamente en mobile
+
+  @media (max-width: 600px) {
+    height: 100vh; // Ocupa todo el alto disponible en pantallas pequeñas
+  }
+}
+
+.image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease-out;
+}

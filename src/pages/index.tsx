@@ -1,9 +1,32 @@
 import { Layout } from "@/layouts/Layout";
-import About from "@/components/About/About";
-import Contact from "@/components/Footer/Footer";
-import Experiencie from "@/components/Experiencie/Experiencie";
 import Hero from "@/components/Hero/Hero";
-import Projects from "@/components/Projects/Projects";
+import dynamic from "next/dynamic";
+
+
+const About = dynamic(() => import("@/components/About/About"), {
+  ssr: true,
+  loading: () => <div style={{ height: "100vh" }} />
+});
+
+const Experiencie = dynamic(() => import("@/components/Experiencie/Experiencie"), {
+  ssr: true,
+  loading: () => <div style={{ height: "100vh" }} />
+});
+
+const Projects = dynamic(() => import("@/components/Projects/Projects"), {
+  ssr: true,
+  loading: () => <div style={{ height: "80vh" }} />
+});
+
+const ContactForm = dynamic(() => import("@/components/Contact/contact-form"), {
+  ssr: true,
+  loading: () => <div style={{ height: "60vh" }} />
+});
+
+const Contact = dynamic(() => import("@/components/Footer/Footer"), {
+  ssr: true,
+  loading: () => <div style={{ height: "20vh" }} />
+});
 
 export default function Home() {
   return (
@@ -12,6 +35,7 @@ export default function Home() {
       <About />
       <Experiencie />
       <Projects />
+      <ContactForm />
       <Contact />
     </Layout>
   );

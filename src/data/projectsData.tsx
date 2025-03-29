@@ -1,6 +1,5 @@
 export interface Project {
   id: string;
-  sequence: number;
   title: string;
   category: string;
   summary: string;
@@ -21,12 +20,17 @@ export interface Project {
   role: string;
   duration: string;
   challenges?: string[];
+  colors: {
+    primary: string;
+    secondary: string;
+    background: string;
+    text: string;
+  };
 }
 
 export const projectData: Project[] = [
   {
     id: "linkinpark",
-    sequence: 1,
     title: "Linkin Park",
     category: "Web Development",
     summary: "A tribute to Linkin Park",
@@ -72,11 +76,17 @@ export const projectData: Project[] = [
       "Provided detailed and accurate information about the band and its members"
     ],
     role: "Developer",
-    duration: "2 months"
+    duration: "2 months",
+    colors: {
+      primary: "#efefef", 
+      secondary: "#bfbfbf", 
+      background: "#ffffff", 
+      text: "#333333" 
+    }
+
   },
   {
     id: "handcode",
-    sequence: 2,
     title: "Handcode",
     category: "Web Development",
     summary: "A web development company",
@@ -115,11 +125,17 @@ export const projectData: Project[] = [
       "Maintaining a scalable and organized project structure",
       "Optimizing performance for large-scale projects"],
     role: "Developer",
-    duration: "3 months"
+    duration: "3 months",
+    colors: {
+      primary: "#ff2e89", // Color principal vibrante
+      secondary: "#d92674", // Un tono más oscuro del primary
+      background: "rgba(255, 46, 137, 0.05)", // Un fondo sutil con la misma tonalidad
+      text: "#2b0d18" // Un tono oscuro derivado del primary para buen contraste
+    }
+
   },
   {
     id: "tiendablu",
-    sequence: 3,
     title: "Tienda Blu",
     category: "Ecommerce",
     summary: "An Ecommerce of sportswear",
@@ -160,11 +176,16 @@ export const projectData: Project[] = [
       "Developed a modular and reusable component-based architecture",
       "Deployed the application on Vercel, ensuring high availability and performance"],
     role: "Developer",
-    duration: "4 months"
+    duration: "4 months",
+    colors: {
+      primary: "#2f79ff",
+      secondary: "#1e52b3",
+      background: "#e3ecff",
+      text: "#1a1a1a"
+    }
   },
   {
     id: "pinder",
-    sequence: 4,
     title: "Pinder",
     category: "Pet Blog",
     summary: "A Pet Blog made in Django",
@@ -203,11 +224,17 @@ export const projectData: Project[] = [
       "Developed a functional CRUD system for posts and comments",
       "Deployed the app and made it accessible online"],
     role: "Developer",
-    duration: "3 months"
+    duration: "3 months",
+    colors: {
+      primary: "#fbff00",
+      secondary: "#a59f00",
+      background: "#1a1a1a",
+      text: "#ffffff"
+    }
+
   },
   {
     id: "viajaya",
-    sequence: 5,
     title: "Viajaya",
     category: "Expense Simulator",
     summary: "An expense simulator with the theme of travel",
@@ -230,11 +257,18 @@ export const projectData: Project[] = [
     challenges: ["Dynamic currency conversion",
       "User input validation"],
     role: "Developer",
-    duration: "2 months"
+    duration: "2 months",
+    colors: {
+      primary: "#00ff9d",
+      secondary: "#007a5e",
+      background: "#121212",
+      text: "#ffffff"
+    }
+
+
   },
   {
     id: "lachinafutbol",
-    sequence: 6,
     title: "LA CHINA FUTBOL",
     category: "Football Tournaments",
     summary: "Dynamic venues of each tournament",
@@ -268,11 +302,17 @@ export const projectData: Project[] = [
       "Implemented real-time notifications"
     ],
     role: "Developer",
-    duration: "2 months"
+    duration: "2 months",
+    colors: {
+      primary: "#ff5dd1",
+      secondary: "#b23388",
+      background: "#1a1a1a",
+      text: "#ffffff"
+    }
+
   },
   {
     id: 'guia-git',
-    sequence: 7,
     title: "Guia Git",
     category: "Git Guide",
     summary: "A centralized Git guide for beginners",
@@ -321,11 +361,16 @@ export const projectData: Project[] = [
       "Monitored application performance and user interactions with Vercel Analytics"
     ],
     role: "Frontend Developer",
-    duration: "2 months"
+    duration: "2 months",
+    colors: {
+      primary: "#ff5b0a",
+      secondary: "#b34307",
+      background: "#1a1a1a",
+      text: "#ffffff"
+    }
   },
   {
     id: 'moron',
-    sequence: 8,
     title: "Presupuesto Participativo Morón",
     category: "Full Stack Development",
     summary: "A comprehensive digital democracy platform that enables citizens to participate in municipal budget allocation through transparent voting and project tracking.",
@@ -380,6 +425,13 @@ export const projectData: Project[] = [
     mobileFirst: true,
     githubLink: "empty",
     liveLink: "https://presupuestoparticipativomoron.com//",
-    next: "linkinpark"
+    next: "linkinpark",
+    colors: {
+      primary: "#ff2929",
+      secondary: "#b32121",
+      background: "#1a1a1a",
+      text: "#ffffff"
+    }
+
   }
 ];

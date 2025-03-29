@@ -63,8 +63,7 @@ const Hero = () => {
         animate={isReady ? "visible" : "hidden"}
         variants={titleVariants}
       >
-        <h1 className={styles.title}>looking for a creative developer?
-          <span>hi, nice to meet you!</span>
+        <h1 className={styles.title}>Looking for a web solution? <span>Hi, nice to meet you!</span>
         </h1>
       </motion.div>
       <motion.img

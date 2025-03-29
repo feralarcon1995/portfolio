@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import styles from './projects.module.scss';
 import { projectData } from '@/data/projectsData';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface Project {
   id: string;
@@ -10,24 +11,38 @@ interface Project {
   firstImg: string;
 }
 
-export default function Projects() {
+const Projects = React.memo(() => {
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [windowWidth, setWindowWidth] = useState<number>(0);
   const sectionRef = useRef<HTMLElement>(null);
+  const lastUpdateTime = useRef(0);
 
   useEffect(() => {
-    setWindowWidth(window.innerWidth);
-
-    const handleResize = () => {
+    const updateWindowWidth = () => {
       setWindowWidth(window.innerWidth);
     };
 
+    updateWindowWidth();
+
+    let resizeTimer: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(updateWindowWidth, 100);
+    };
+
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+    };
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const now = performance.now();
+    if (now - lastUpdateTime.current < 16) return; // Limit to ~60fps
+
+    lastUpdateTime.current = now;
     if (sectionRef.current) {
       const rect = sectionRef.current.getBoundingClientRect();
       setMousePosition({
@@ -35,9 +50,9 @@ export default function Projects() {
         y: e.clientY - rect.top
       });
     }
-  };
+  }, []);
 
-  const getOffsetPosition = () => {
+  const getOffsetPosition = useCallback(() => {
     if (windowWidth <= 768) {
       return {
         x: mousePosition.x + (windowWidth * 0.9),
@@ -56,9 +71,14 @@ export default function Projects() {
         y: mousePosition.y - 50
       };
     }
-  };
+  }, [mousePosition.x, mousePosition.y, windowWidth]);
 
-  const cursorPosition = getOffsetPosition();
+  const cursorPosition = useMemo(() => getOffsetPosition(), [getOffsetPosition]);
+
+  const hoveredProjectData = useMemo(() =>
+    projectData.find(p => p.id === hoveredProject),
+    [hoveredProject]
+  );
 
   return (
     <section
@@ -69,7 +89,7 @@ export default function Projects() {
     >
       <div className={styles.projects_title}>
         <h1>Some of my works.</h1>
-        <h2>Click on the project to see more  details.</h2>
+        <h2>Click on the project to see more details.</h2>
       </div>
 
       <article className={styles.projects_list_container}>
@@ -112,7 +132,7 @@ export default function Projects() {
         </ul>
       </article>
 
-      {hoveredProject && (
+      {hoveredProject && hoveredProjectData && (
         <motion.div
           className={styles.cursor_follower}
           animate={{
@@ -128,12 +148,20 @@ export default function Projects() {
             damping: 30
           }}
         >
-          <img
-            src={projectData.find(p => p.id === hoveredProject)?.firstImg}
-            alt={projectData.find(p => p.id === hoveredProject)?.title}
+          <Image
+            src={hoveredProjectData.firstImg}
+            alt={hoveredProjectData.title}
+            width={800}
+            height={450}
+            priority={true}
+            sizes="(max-width: 768px) 100vw, 800px"
           />
         </motion.div>
       )}
     </section>
   );
-}
+});
+
+Projects.displayName = 'Projects';
+
+export default Projects;
