@@ -24,6 +24,7 @@ const ContactForm = memo(() => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [captchaError, setCaptchaError] = useState<string>("");
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -43,7 +44,6 @@ const ContactForm = memo(() => {
       window.removeEventListener('resize', checkIfMobile);
     };
   }, []);
-
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -75,6 +75,14 @@ const ContactForm = memo(() => {
     return Object.keys(newErrors).length === 0;
   }, [formData]);
 
+  // Handle reCAPTCHA verification
+  const handleCaptchaChange = (value: string | null) => {
+    setCaptchaValue(value);
+    if (value) {
+      setCaptchaError("");
+    }
+  };
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submission started");
@@ -87,26 +95,33 @@ const ContactForm = memo(() => {
     setIsSubmitting(true);
 
     try {
-      let captchaValue;
+      let verificationValue;
 
       if (isMobile) {
-        // En móviles, obtén el valor directamente
-        captchaValue = recaptchaRef.current?.getValue();
-        console.log("Mobile captcha value:", captchaValue);
+        // For mobile, use the stored captcha value or get it directly
+        verificationValue = captchaValue || recaptchaRef.current?.getValue();
+        console.log("Mobile captcha value:", verificationValue);
 
-        // Si no hay valor, es posible que el usuario no haya marcado la casilla
-        if (!captchaValue) {
+        // If there's no value, the user hasn't checked the reCAPTCHA box
+        if (!verificationValue) {
           setCaptchaError("Please check the reCAPTCHA box");
           setIsSubmitting(false);
           return;
         }
       } else {
-        // En escritorio, usa executeAsync para el reCAPTCHA invisible
-        captchaValue = await recaptchaRef.current?.executeAsync();
-        console.log("Desktop captcha execution:", captchaValue);
+        // For desktop, execute the invisible reCAPTCHA
+        try {
+          verificationValue = await recaptchaRef.current?.executeAsync();
+          console.log("Desktop captcha execution:", verificationValue);
+        } catch (error) {
+          console.error("Error executing reCAPTCHA:", error);
+          setCaptchaError("Failed to verify reCAPTCHA. Please try again.");
+          setIsSubmitting(false);
+          return;
+        }
       }
 
-      if (!captchaValue) {
+      if (!verificationValue) {
         setCaptchaError("reCAPTCHA verification failed. Please try again.");
         setIsSubmitting(false);
         return;
@@ -122,7 +137,7 @@ const ContactForm = memo(() => {
         name: formData.name,
         email: formData.email,
         message: formData.message,
-        "g-recaptcha-response": captchaValue
+        "g-recaptcha-response": verificationValue
       };
 
       console.log("Sending email with params:", templateParams);
@@ -137,7 +152,7 @@ const ContactForm = memo(() => {
       console.log("Email sent successfully");
       setIsSubmitted(true);
       setFormData({ name: "", email: "", message: "" });
-
+      setCaptchaValue(null);
       recaptchaRef.current?.reset();
 
       setTimeout(() => {
@@ -153,7 +168,7 @@ const ContactForm = memo(() => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [validateForm, formData, isMobile]);
+  }, [validateForm, formData, isMobile, captchaValue]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -177,7 +192,6 @@ const ContactForm = memo(() => {
       },
     },
   };
-
 
   const buttonVariants = {
     idle: {
@@ -209,7 +223,6 @@ const ContactForm = memo(() => {
     }
   };
 
-
   const successVariants = {
     hidden: {
       opacity: 0,
@@ -237,8 +250,6 @@ const ContactForm = memo(() => {
       }
     }
   };
-
-
 
   return (
     <section className={styles.contact_container} id="contact-form">
@@ -315,12 +326,15 @@ const ContactForm = memo(() => {
             </motion.div>
           </Magnet>
 
-          <ReCAPTCHA
-            ref={recaptchaRef}
-            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
-            size={isMobile ? "normal" : "invisible"}
-            badge="bottomright"
-          />
+          <div className={styles.recaptcha_container}>
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+              size={isMobile ? "normal" : "invisible"}
+              badge="bottomright"
+              onChange={handleCaptchaChange}
+            />
+          </div>
 
           {captchaError && (
             <motion.div className={styles.error_message} variants={itemVariants}>
@@ -437,18 +451,6 @@ const ContactForm = memo(() => {
                 >
                   Thank you! Your message has been sent successfully.
                 </motion.p>
-              </motion.div>
-            )}
-
-            {isMobile && captchaError && (
-              <motion.div className={styles.error_message} variants={itemVariants}>
-                {captchaError}
-              </motion.div>
-            )}
-
-            {isMobile && isSubmitting && (
-              <motion.div className={styles.info_message} variants={itemVariants}>
-                Verifying reCAPTCHA and sending message...
               </motion.div>
             )}
           </AnimatePresence>
