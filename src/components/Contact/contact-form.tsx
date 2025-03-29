@@ -26,6 +26,21 @@ const ContactForm = memo(() => {
   const [captchaError, setCaptchaError] = useState<string>("");
   const formRef = useRef<HTMLFormElement>(null);
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  const checkIfMobile = () => {
+    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+  };
+  
+  checkIfMobile();
+  window.addEventListener('resize', checkIfMobile);
+  
+  return () => {
+    window.removeEventListener('resize', checkIfMobile);
+  };
+}, []);
+
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -64,7 +79,6 @@ const ContactForm = memo(() => {
 
     if (recaptchaRef.current) {
       try {
-        setIsSubmitting(true);
         setIsSubmitting(true);
         const captchaValue = await recaptchaRef.current.executeAsync();
         console.log("Captcha Value:", captchaValue); 
@@ -165,16 +179,6 @@ const ContactForm = memo(() => {
     }
   };
 
-  const loadingDotsVariants = {
-    animate: {
-      opacity: [0, 1, 0],
-      transition: {
-        duration: 1.5,
-        repeat: Infinity,
-        repeatType: "loop" as const
-      }
-    }
-  };
 
   const successVariants = {
     hidden: {
@@ -203,6 +207,8 @@ const ContactForm = memo(() => {
       }
     }
   };
+
+
 
   return (
     <section className={styles.contact_container} id="contact-form">
@@ -282,8 +288,8 @@ const ContactForm = memo(() => {
           <ReCAPTCHA
             ref={recaptchaRef}
             sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
-            size="invisible"
-            badge="inline"
+            size={isMobile ? "normal" : "invisible"}
+            badge="bottomright" 
           />
 
           {captchaError && (
