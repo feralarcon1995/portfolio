@@ -65,7 +65,9 @@ const ContactForm = memo(() => {
     if (recaptchaRef.current) {
       try {
         setIsSubmitting(true);
+        setIsSubmitting(true);
         const captchaValue = await recaptchaRef.current.executeAsync();
+        console.log("Captcha Value:", captchaValue); 
 
         if (!captchaValue) {
           setCaptchaError("reCAPTCHA verification failed. Please try again.");
@@ -99,7 +101,7 @@ const ContactForm = memo(() => {
 
         setTimeout(() => {
           setIsSubmitted(false);
-        }, 5000); // Extended time to appreciate the animation
+        }, 5000);
       } catch (error: unknown) {
         console.error("Error sending email or verifying reCAPTCHA:", error);
         setCaptchaError("An error occurred. Please try again later.");
@@ -281,6 +283,7 @@ const ContactForm = memo(() => {
             ref={recaptchaRef}
             sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
             size="invisible"
+            badge="inline"
           />
 
           {captchaError && (
