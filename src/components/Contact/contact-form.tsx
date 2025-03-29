@@ -31,10 +31,9 @@ const ContactForm = memo(() => {
 
   useEffect(() => {
     const checkIfMobile = () => {
-      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       const isSmallScreen = window.innerWidth < 600;
 
-      setIsMobile(isMobileDevice || isSmallScreen);
+      setIsMobile(isSmallScreen);
     };
 
     checkIfMobile();
@@ -85,10 +84,8 @@ const ContactForm = memo(() => {
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submission started");
 
     if (!validateForm()) {
-      console.log("Form validation failed");
       return;
     }
 
@@ -98,23 +95,17 @@ const ContactForm = memo(() => {
       let verificationValue;
 
       if (isMobile) {
-        // For mobile, use the stored captcha value or get it directly
         verificationValue = captchaValue || recaptchaRef.current?.getValue();
-        console.log("Mobile captcha value:", verificationValue);
 
-        // If there's no value, the user hasn't checked the reCAPTCHA box
         if (!verificationValue) {
           setCaptchaError("Please check the reCAPTCHA box");
           setIsSubmitting(false);
           return;
         }
       } else {
-        // For desktop, execute the invisible reCAPTCHA
         try {
           verificationValue = await recaptchaRef.current?.executeAsync();
-          console.log("Desktop captcha execution:", verificationValue);
         } catch (error) {
-          console.error("Error executing reCAPTCHA:", error);
           setCaptchaError("Failed to verify reCAPTCHA. Please try again.");
           setIsSubmitting(false);
           return;
@@ -128,7 +119,6 @@ const ContactForm = memo(() => {
       }
 
       if (!formRef.current) {
-        console.log("Form ref is null");
         setIsSubmitting(false);
         return;
       }
@@ -140,7 +130,6 @@ const ContactForm = memo(() => {
         "g-recaptcha-response": verificationValue
       };
 
-      console.log("Sending email with params:", templateParams);
 
       await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
@@ -149,7 +138,6 @@ const ContactForm = memo(() => {
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
       );
 
-      console.log("Email sent successfully");
       setIsSubmitted(true);
       setFormData({ name: "", email: "", message: "" });
       setCaptchaValue(null);
@@ -159,7 +147,6 @@ const ContactForm = memo(() => {
         setIsSubmitted(false);
       }, 5000);
     } catch (error: unknown) {
-      console.error("Error sending email:", error);
       if (error instanceof Error) {
         setCaptchaError(`Error: ${error.message}`);
       } else {
