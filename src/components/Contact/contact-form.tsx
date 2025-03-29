@@ -28,18 +28,21 @@ const ContactForm = memo(() => {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-useEffect(() => {
-  const checkIfMobile = () => {
-    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
-  };
-  
-  checkIfMobile();
-  window.addEventListener('resize', checkIfMobile);
-  
-  return () => {
-    window.removeEventListener('resize', checkIfMobile);
-  };
-}, []);
+  useEffect(() => {
+    const checkIfMobile = () => {
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isSmallScreen = window.innerWidth < 600;
+
+      setIsMobile(isMobileDevice || isSmallScreen);
+    };
+
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIfMobile);
+    };
+  }, []);
 
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -81,7 +84,7 @@ useEffect(() => {
       try {
         setIsSubmitting(true);
         const captchaValue = await recaptchaRef.current.executeAsync();
-        console.log("Captcha Value:", captchaValue); 
+        console.log("Captcha Value:", captchaValue);
 
         if (!captchaValue) {
           setCaptchaError("reCAPTCHA verification failed. Please try again.");
@@ -289,7 +292,7 @@ useEffect(() => {
             ref={recaptchaRef}
             sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
             size={isMobile ? "normal" : "invisible"}
-            badge="bottomright" 
+            badge="bottomright"
           />
 
           {captchaError && (
