@@ -2,7 +2,6 @@ import Head from 'next/head'
 import localFont from "next/font/local";
 import './Layout.module.scss';
 import Navbar from '@/components/Navbar/Navbar';
-import useLenis from '@/hooks/useLenis';
 import { useActiveSection } from '@/hooks/useActiveSection';
 import CircularText from '@/components/CircularText/CircularText';
 import { useRouter } from 'next/router';
@@ -32,7 +31,6 @@ const Monument = localFont({
 });
 
 export const Layout = ({ children, title, description }: LayoutProps) => {
-  useLenis();
   const activeSection = useActiveSection();
   const router = useRouter();
 

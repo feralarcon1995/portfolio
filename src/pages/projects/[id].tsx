@@ -1,11 +1,10 @@
 "use client"
 
 import { useRouter } from "next/router"
-import { useRef, Suspense } from "react"
+import { useRef, Suspense, useEffect } from "react"
 import { motion, useScroll, useSpring } from "framer-motion"
 import dynamic from "next/dynamic"
 import styles from "./projectdetail.module.scss"
-import useLenis from "@/hooks/useLenis"
 import { Layout } from "@/layouts/Layout"
 import { projectData } from "@/data/projectsData"
 
@@ -27,7 +26,15 @@ export default function ProjectDetail() {
   const { id } = router.query
   const containerRef = useRef<HTMLDivElement>(null)
 
-  useLenis()
+
+  useEffect(() => {
+    if (router.asPath.includes("#projects")) {
+      const projectsSection = document.getElementById("projects");
+      if (projectsSection) {
+        projectsSection.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [router.asPath]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,

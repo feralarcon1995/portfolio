@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react';
-import Lenis from '@studio-freight/lenis';
 import { motion, useAnimation, useInView, LazyMotion, domAnimation, useTransform, useScroll } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import styles from './style.module.scss';
@@ -9,6 +8,7 @@ import Image from 'next/image';
 const CustomCursor = dynamic(() => import('./CustomCursor'), { ssr: false });
 const Testimonials = dynamic(() => import('./Testimonials'), { ssr: false });
 const ExperienceTimeline = dynamic(() => import('./ExperienceTimeline'), { ssr: false });
+
 
 interface TechStack {
   id: string;
@@ -254,66 +254,17 @@ export default function Experience() {
       ]
     }
   ], []);
-  const sectionRef = useRef<HTMLDivElement | null>(null);
-  const [hasScrolled, setHasScrolled] = useState(false);
 
+  const sectionRef = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLDivElement>(null);
+
   const { scrollYProgress } = useScroll({
-    target: titleRef,
+    target: sectionRef,
     offset: ["start end", "end start"]
   });
 
   const h2Y = useTransform(scrollYProgress, [0, 0.5], [-100, 0]);
-  const h2Opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
-  const h3X = useTransform(scrollYProgress, [0.1, 0.6], [-200, 0]);
-  const h3Opacity = useTransform(scrollYProgress, [0.1, 0.6], [0, 1]);
-
-  const handleScroll = useCallback(() => {
-    if (!sectionRef.current || hasScrolled) return;
-
-    const sectionTop = sectionRef.current.getBoundingClientRect().top;
-    const windowHeight = window.innerHeight;
-
-    if (sectionTop < windowHeight) {
-      setHasScrolled(true);
-    }
-  }, [hasScrolled]);
-
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 0.8,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 0.7,
-      lerp: 0.06,
-      syncTouch: true,
-    });
-
-    let lastScrollTime = 0;
-    const scrollThreshold = 50;
-
-    const scrollListener = () => {
-      const now = performance.now();
-      if (now - lastScrollTime < scrollThreshold) return;
-      lastScrollTime = now;
-
-      requestAnimationFrame(handleScroll);
-    };
-
-    lenis.on('scroll', scrollListener);
-
-    const animate = (time: number) => {
-      lenis.raf(time);
-      requestAnimationFrame(animate);
-    };
-
-    const animationFrame = requestAnimationFrame(animate);
-
-    return () => {
-      lenis.destroy();
-      cancelAnimationFrame(animationFrame);
-    };
-  }, [handleScroll]);
+  const h3X = useTransform(scrollYProgress, [0, 0.5], [-200, 0]);
 
   return (
     <LazyMotion features={domAnimation}>
@@ -326,7 +277,6 @@ export default function Experience() {
             <motion.h2
               style={{
                 y: h2Y,
-                opacity: h2Opacity
               }}
             >
               My Journey: What I&apos;ve Learned in the Way
@@ -334,7 +284,6 @@ export default function Experience() {
             <motion.h3
               style={{
                 x: h3X,
-                opacity: h3Opacity
               }}
             >
               My Journey: What I&apos;ve Learned in the Way

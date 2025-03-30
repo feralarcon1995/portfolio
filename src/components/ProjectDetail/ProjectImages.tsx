@@ -3,7 +3,6 @@
 import { useRef, useEffect, useState } from "react"
 import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 import Image from "next/image"
-import useLenis from "@/hooks/useLenis"
 import styles from "./ProjectImages.module.scss"
 
 interface ImageProps {
@@ -20,10 +19,6 @@ const ProjectImages = ({ images, projectId }: ProjectImagesProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
 
-  // Initialize Lenis for smooth scrolling
-  const lenis = useLenis()
-
-  // Check if mobile on mount and when window resizes
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768)
@@ -37,28 +32,23 @@ const ProjectImages = ({ images, projectId }: ProjectImagesProps) => {
     }
   }, [])
 
-  // Scroll animations
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   })
 
-  // Smooth out the scroll progress
   const smoothScrollProgress = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001,
   })
 
-  // Create different parallax speeds for each image
   const firstImageY = useTransform(smoothScrollProgress, [0, 1], ["0%", "20%"])
   const secondImageY = useTransform(smoothScrollProgress, [0, 1], ["0%", "-55%"])
 
-  // Create zoom effects
   const firstImageScale = useTransform(smoothScrollProgress, [0, 0.5, 1], [1, 1.05, 1.1])
   const secondImageScale = useTransform(smoothScrollProgress, [0, 0.5, 1], [1, 1.08, 1.15])
 
-  // Create opacity effects
   const firstImageOpacity = useTransform(smoothScrollProgress, [0, 0.3, 0.6, 1], [0.6, 1, 1, 0.8])
   const secondImageOpacity = useTransform(smoothScrollProgress, [0, 0.3, 0.7, 1], [0.6, 0.8, 1, 1])
 
