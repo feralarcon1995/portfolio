@@ -97,7 +97,7 @@ export const projectData: Project[] = [
     duration: "2 months",
     year: "2023",
     colors: {
-      primary: "rgba(239, 239, 239, 1)",
+      primary: "rgb(61, 61, 61)",
       secondary: "rgba(191, 191, 191, 1)",
       background: "rgba(255, 255, 255, 1)",
       text: "rgba(51, 51, 51, 1)"
@@ -157,10 +157,10 @@ export const projectData: Project[] = [
     duration: "3 months",
     year: "2023",
     colors: {
-      primary: "rgba(255, 46, 137, 1)",
-      secondary: "rgba(217, 38, 116, 1)",
-      background: "rgba(255, 46, 137, 0.05)",
-      text: "rgba(43, 13, 24, 1)"
+      primary: "rgba(255, 93, 209, 1)",
+      secondary: "rgba(178, 51, 136, 1)",
+      background: "rgba(26, 26, 26, 1)",
+      text: "rgba(255, 255, 255, 1)"
     }
   },
   {
@@ -405,7 +405,7 @@ export const projectData: Project[] = [
     ],
     heroImage: "",
     mobileFirst: true,
-    github: "empty",
+    github: "https://github.com/feralarcon1995/guia-git",
     live: "https://guia-git.vercel.app/",
     next: "moron",
     features: [{
@@ -454,7 +454,7 @@ export const projectData: Project[] = [
   },
   {
     id: 'moron',
-    title: "Presupuesto Participativo Morón",
+    title: "Presupuesto Participativo Moron",
     category: "Full Stack Development",
     summary: "A comprehensive digital democracy platform that enables citizens to participate in municipal budget allocation through transparent voting and project tracking.",
     description: "A comprehensive digital democracy platform that enables citizens to participate in municipal budget allocation through transparent voting and project tracking.",
@@ -468,15 +468,15 @@ export const projectData: Project[] = [
     images: [
       {
         src: "/images/projects/moron.png",
-        alt: "Presupuesto Participativo Morón project image"
+        alt: "Presupuesto Participativo Moron project image"
       },
       {
         src: "/images/projects/moron-1.png",
-        alt: "Presupuesto Participativo Morón project image 1"
+        alt: "Presupuesto Participativo Moron project image 1"
       },
       {
         src: "/images/projects/moron-2.png",
-        alt: "Presupuesto Participativo Morón project image 2"
+        alt: "Presupuesto Participativo Moron project image 2"
       }
     ],
     heroImage: "",

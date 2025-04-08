@@ -136,24 +136,28 @@ const HeroSection: React.FC<HeroSectionProps> = ({ project }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
           >
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.linkButton}
-            >
-              <GithubIcon />
-              <span>View on GitHub</span>
-            </a>
-            <a
-              href={project.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.linkButton}
-            >
-              <ExternalLink size={20} />
-              <span>Live Demo</span>
-            </a>
+            {project.github && project.github !== "empty" && project.github.trim() !== "" && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.linkButton}
+              >
+                <GithubIcon />
+                <span>View on GitHub</span>
+              </a>
+            )}
+            {project.live && project.live !== "empty" && project.live.trim() !== "" && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.linkButton}
+              >
+                <ExternalLink size={20} />
+                <span>Live Demo</span>
+              </a>
+            )}
           </motion.div>
         </motion.div>
       </div>

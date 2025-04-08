@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Github, ExternalLink } from "lucide-react"
 import styles from "@/pages/projects/projectdetail.module.scss"
+import GithubIcon from "@/icons/GithubIcon"
 
 interface ProjectLinksProps {
   project: {
@@ -13,6 +14,9 @@ interface ProjectLinksProps {
 }
 
 export default function ProjectLinks({ project, primaryColor }: ProjectLinksProps) {
+  const hasGithub = project.github && project.github !== "empty" && project.github.trim() !== ""
+  const hasLive = project.live && project.live !== "empty" && project.live.trim() !== ""
+
   return (
     <section className={styles.projectLinksSection}>
       <motion.div
@@ -36,51 +40,55 @@ export default function ProjectLinks({ project, primaryColor }: ProjectLinksProp
           className={styles.linksWrapper}
           style={{ backgroundColor: `rgba(${primaryColor}, 0.05)` }}
         >
-          <motion.div
-            className={styles.linkItem}
-            whileHover={{ scale: 1.05, x: 10 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.linkButton}
-              style={{ color: primaryColor }}
+          {hasGithub && (
+            <motion.div
+              className={styles.linkItem}
+              whileHover={{ scale: 1.05, x: 10 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
-              <motion.div
-                className={styles.iconWrapper}
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.5 }}
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.linkButton}
+                style={{ color: primaryColor }}
               >
-                <Github size={24} />
-              </motion.div>
-              <span>View on GitHub</span>
-            </a>
-          </motion.div>
+                <motion.div
+                  className={styles.iconWrapper}
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <GithubIcon />
+                </motion.div>
+                <span>View on GitHub</span>
+              </a>
+            </motion.div>
+          )}
 
-          <motion.div
-            className={styles.linkItem}
-            whileHover={{ scale: 1.05, x: -10 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <a
-              href={project.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.linkButton}
-              style={{ color: primaryColor }}
+          {hasLive && (
+            <motion.div
+              className={styles.linkItem}
+              whileHover={{ scale: 1.05, x: -10 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
-              <motion.div
-                className={styles.iconWrapper}
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.5 }}
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.linkButton}
+                style={{ color: primaryColor }}
               >
-                <ExternalLink size={24} />
-              </motion.div>
-              <span>Live Demo</span>
-            </a>
-          </motion.div>
+                <motion.div
+                  className={styles.iconWrapper}
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <ExternalLink size={24} />
+                </motion.div>
+                <span>Live Demo</span>
+              </a>
+            </motion.div>
+          )}
         </motion.div>
       </motion.div>
     </section>
