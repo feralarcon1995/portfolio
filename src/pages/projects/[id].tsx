@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/router"
-import { useRef, Suspense, useEffect } from "react"
+import { Suspense } from "react"
 import { motion, useScroll, useSpring } from "framer-motion"
 import dynamic from "next/dynamic"
 import styles from "./projectdetail.module.scss"
@@ -11,7 +11,6 @@ import { projectData } from "@/data/projectsData"
 const HeroSection = dynamic(() => import("@/components/ProjectDetail/HeroSection"), { ssr: false })
 const ProjectSummary = dynamic(() => import("@/components/ProjectDetail/ProjectSummary"), { ssr: false })
 const ProjectDescription = dynamic(() => import("@/components/ProjectDetail/ProjectDescription"), { ssr: false })
-const TechnologiesSection = dynamic(() => import("@/components/ProjectDetail/TechnologiesSection"), { ssr: false })
 const FeaturesSection = dynamic(() => import("@/components/ProjectDetail/FeaturesSection"), { ssr: false })
 const ChallengesHighlights = dynamic(() => import("@/components/ProjectDetail/ChallengesHighlights"), { ssr: false })
 const ProjectLinks = dynamic(() => import("@/components/ProjectDetail/ProjectLinks"), { ssr: false })
@@ -24,23 +23,8 @@ const NotFoundState = dynamic(() => import("@/components/ProjectDetail/NotFoundS
 export default function ProjectDetail() {
   const router = useRouter()
   const { id } = router.query
-  const containerRef = useRef<HTMLDivElement>(null)
 
-
-  useEffect(() => {
-    if (router.asPath.includes("#projects")) {
-      const projectsSection = document.getElementById("projects");
-      if (projectsSection) {
-        projectsSection.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }, [router.asPath]);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  })
-
+  const { scrollYProgress } = useScroll()
   const springScrollY = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 })
 
   if (!id) {
@@ -57,25 +41,22 @@ export default function ProjectDetail() {
 
   return (
     <Layout title={`${project.title} - Project Details`}>
-      <section ref={containerRef} className={styles.projectDetailContainer}>
+      <motion.section
+        className={styles.projectDetailContainer}
+        style={{
+          '--primary-color': project.colors.primary,
+          '--secondary-color': project.colors.secondary,
+          '--background-color': project.colors.background,
+          '--text-color': project.colors.text,
+        } as React.CSSProperties}
+      >
         <Suspense fallback={<LoadingState />}>
-          <HeroSection project={project} scrollProgress={springScrollY} />
+          <HeroSection project={project} />
 
-          <article className={styles.projectContent}>
+          <motion.article className={styles.projectContent}>
             <ProjectSummary project={project} />
-
-            <ProjectImages
-              images={[
-                { src: project.firstImg, alt: `${project.title} - Main view` },
-                { src: project.secondImg, alt: `${project.title} - Secondary view` },
-              ]}
-              projectId={id as string}
-            />
-
+            <ProjectImages project={project} />
             <ProjectDescription project={project} textReveal={springScrollY} />
-
-            <TechnologiesSection project={project} />
-
             <FeaturesSection project={project} />
 
             {(project.challenges || project.highlights) && (
@@ -86,29 +67,11 @@ export default function ProjectDetail() {
               />
             )}
 
-            <ProjectLinks project={project} />
-
+            <ProjectLinks project={project} primaryColor={project.colors.primary} />
             {nextProject && <NextProject nextProject={nextProject} primaryColor={project.colors.primary} />}
-
-            <motion.div
-              className={styles.backToProjects}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-            >
-              <motion.button
-                onClick={() => router.push("/#projects")}
-                className={styles.backButton}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                ← Back to All Projects
-              </motion.button>
-            </motion.div>
-          </article>
+          </motion.article>
         </Suspense>
-      </section>
+      </motion.section>
     </Layout>
   )
 }

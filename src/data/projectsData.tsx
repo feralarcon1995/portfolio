@@ -3,14 +3,20 @@ export interface Project {
   title: string;
   category: string;
   summary: string;
+  description: string;
   text: string[];
   secondary: string[];
+  technologies: string[];
   thumbnail?: string;
-  firstImg: string;
-  secondImg: string;
+  heroImage: string;
+  images: {
+    src: string;
+    alt: string;
+    caption?: string;
+  }[];
   mobileFirst: boolean;
-  githubLink: string;
-  liveLink: string;
+  github: string;
+  live: string;
   next: string;
   features: {
     title: string;
@@ -19,6 +25,7 @@ export interface Project {
   highlights: string[];
   role: string;
   duration: string;
+  year: string;
   challenges?: string[];
   colors: {
     primary: string;
@@ -34,16 +41,27 @@ export const projectData: Project[] = [
     title: "Linkin Park",
     category: "Web Development",
     summary: "A tribute to Linkin Park",
+    description: "A tribute to Linkin Park",
     text: [
       "ProyectoFinalCoderHouse is a final project created for the Web Development course at Coderhouse. The project is a fan page dedicated to the band Linkin Park. It features real content extracted from their official page, including detailed information about the band members, their discography, and a media gallery with photos and videos. The project aims to provide a comprehensive and engaging experience for fans of Linkin Park.",
       "The project heavily utilizes HTML for structure, CSS for styling, and SCSS for advanced styling features, ensuring a responsive and visually appealing design across various devices."
     ],
     secondary: ["HTML", "CSS", "SCSS", "BOOTSTRAP", "JAVASCRIPT"],
-    firstImg: "/images/projects/lp-1.png",
-    secondImg: "/images/projects/lp-2.png",
+    technologies: [],
+    images: [
+      {
+        src: "/images/projects/lp-1.png",
+        alt: "Linkin Park project image 1"
+      },
+      {
+        src: "/images/projects/lp-2.png",
+        alt: "Linkin Park project image 2"
+      }
+    ],
+    heroImage: "",
     mobileFirst: true,
-    githubLink: "https://github.com/feralarcon1995/ProyectoFinalCoderHouse",
-    liveLink: "https://feralarcon1995.github.io/ProyectoFinalCoderHouse/",
+    github: "https://github.com/feralarcon1995/ProyectoFinalCoderHouse",
+    live: "https://feralarcon1995.github.io/ProyectoFinalCoderHouse/",
     next: "handcode",
     features: [
       {
@@ -77,28 +95,39 @@ export const projectData: Project[] = [
     ],
     role: "Developer",
     duration: "2 months",
+    year: "2023",
     colors: {
-      primary: "#efefef", 
-      secondary: "#bfbfbf", 
-      background: "#ffffff", 
-      text: "#333333" 
+      primary: "rgba(239, 239, 239, 1)",
+      secondary: "rgba(191, 191, 191, 1)",
+      background: "rgba(255, 255, 255, 1)",
+      text: "rgba(51, 51, 51, 1)"
     }
-
   },
   {
     id: "handcode",
     title: "Handcode",
     category: "Web Development",
     summary: "A web development company",
+    description: "A web development company",
     text: [
       "Hand Code is a comprehensive web development project designed to provide a wide range of reusable components and assets for creating modern and responsive web applications. The project includes a collection of SCSS, JavaScript, and CSS files, as well as organized assets such as images and fonts."
     ],
     secondary: ["HTML", "CSS", "SCSS", "BOOTSTRAP", "JAVASCRIPT"],
-    firstImg: "/images/projects/hand-1.png",
-    secondImg: "/images/projects/hand-2.png",
+    technologies: [],
+    images: [
+      {
+        src: "/images/projects/hand-1.png",
+        alt: "Handcode project image 1"
+      },
+      {
+        src: "/images/projects/hand-2.png",
+        alt: "Handcode project image 2"
+      }
+    ],
+    heroImage: "",
     mobileFirst: true,
-    githubLink: "https://handcode.com.ar/",
-    liveLink: "https://handcode.com.ar/",
+    github: "https://handcode.com.ar/",
+    live: "https://handcode.com.ar/",
     next: "tiendablu",
     features: [{
       title: "Custom SCSS",
@@ -126,28 +155,39 @@ export const projectData: Project[] = [
       "Optimizing performance for large-scale projects"],
     role: "Developer",
     duration: "3 months",
+    year: "2023",
     colors: {
-      primary: "#ff2e89", // Color principal vibrante
-      secondary: "#d92674", // Un tono más oscuro del primary
-      background: "rgba(255, 46, 137, 0.05)", // Un fondo sutil con la misma tonalidad
-      text: "#2b0d18" // Un tono oscuro derivado del primary para buen contraste
+      primary: "rgba(255, 46, 137, 1)",
+      secondary: "rgba(217, 38, 116, 1)",
+      background: "rgba(255, 46, 137, 0.05)",
+      text: "rgba(43, 13, 24, 1)"
     }
-
   },
   {
     id: "tiendablu",
     title: "Tienda Blu",
     category: "Ecommerce",
     summary: "An Ecommerce of sportswear",
+    description: "An Ecommerce of sportswear",
     text: [
       "Tienda Blu is an e-commerce platform for sportswear developed using React Js. The application allows users to browse through various categories of sportswear, view detailed product descriptions, and make purchases. The project leverages Firebase for backend services, including user authentication, data storage, and order management."
     ],
     secondary: ["HTML", "CSS", "SCSS", "BOOTSTRAP", "JAVASCRIPT", "REACTJS", "FIREBASE"],
-    firstImg: "/images/projects/tienda-1.png",
-    secondImg: "/images/projects/tienda-2.png",
+    technologies: [],
+    images: [
+      {
+        src: "/images/projects/tienda-1.png",
+        alt: "Tienda Blu project image 1"
+      },
+      {
+        src: "/images/projects/tienda-2.png",
+        alt: "Tienda Blu project image 2"
+      }
+    ],
+    heroImage: "",
     mobileFirst: true,
-    githubLink: "https://github.com/feralarcon1995/TiendaBlu",
-    liveLink: "https://feralarcon1995.github.io/TiendaBlu/",
+    github: "https://github.com/feralarcon1995/TiendaBlu",
+    live: "https://feralarcon1995.github.io/TiendaBlu/",
     next: "pinder",
     features: [{
       title: "E-commerce Platform",
@@ -177,6 +217,7 @@ export const projectData: Project[] = [
       "Deployed the application on Vercel, ensuring high availability and performance"],
     role: "Developer",
     duration: "4 months",
+    year: "2023",
     colors: {
       primary: "#2f79ff",
       secondary: "#1e52b3",
@@ -189,15 +230,22 @@ export const projectData: Project[] = [
     title: "Pinder",
     category: "Pet Blog",
     summary: "A Pet Blog made in Django",
+    description: "A Pet Blog made in Django",
     text: [
       "Pinder is an innovative web application developed using Python and the Django framework. The project is designed to help users find and adopt pets, making it easier to match with their next four-legged companion. The application provides a comprehensive platform where users can register, create profiles, and browse through available pets."
     ],
     secondary: ["HTML", "CSS", "BOOTSTRAP", "PYTHON", "DJANGO", "SQLITE"],
-    firstImg: "/images/projects/pinder/pinder.png",
-    secondImg: "/images/projects/pinder/pinder.png",
+    technologies: [],
+    images: [
+      {
+        src: "/images/projects/pinder/pinder.png",
+        alt: "Pinder project image"
+      }
+    ],
+    heroImage: "",
     mobileFirst: true,
-    githubLink: "https://github.com/feralarcon1995/Pinder",
-    liveLink: "https://github.com/feralarcon1995/Pinder",
+    github: "https://github.com/feralarcon1995/Pinder",
+    live: "https://github.com/feralarcon1995/Pinder",
     next: "viajaya",
     features: [{
       title: "Find pets",
@@ -225,11 +273,12 @@ export const projectData: Project[] = [
       "Deployed the app and made it accessible online"],
     role: "Developer",
     duration: "3 months",
+    year: "2023",
     colors: {
-      primary: "#fbff00",
-      secondary: "#a59f00",
-      background: "#1a1a1a",
-      text: "#ffffff"
+      primary: "rgba(251, 255, 0, 1)",
+      secondary: "rgba(165, 159, 0, 1)",
+      background: "rgba(26, 26, 26, 1)",
+      text: "rgba(255, 255, 255, 1)"
     }
 
   },
@@ -238,15 +287,26 @@ export const projectData: Project[] = [
     title: "Viajaya",
     category: "Expense Simulator",
     summary: "An expense simulator with the theme of travel",
+    description: "An expense simulator with the theme of travel",
     text: [
       "ViajaYa is a final project created for the JavaScript course at Coderhouse. It is a fictional website that functions as a travel cost estimator. The site uses user-entered data and dynamically updates with the daily exchange rate of the Argentine peso to the US dollar. It includes various functionalities to make the site dynamic and interactive."
     ],
     secondary: ["HTML", "CSS", "BOOTSTRAP", "JAVASCRIPT", "JQUERY"],
-    firstImg: "/images/projects/viaja-1.png",
-    secondImg: "/images/projects/viaja-2.png",
+    technologies: [],
+    images: [
+      {
+        src: "/images/projects/viaja-1.png",
+        alt: "Viajaya project image 1"
+      },
+      {
+        src: "/images/projects/viaja-2.png",
+        alt: "Viajaya project image 2"
+      }
+    ],
+    heroImage: "",
     mobileFirst: true,
-    githubLink: "https://github.com/feralarcon1995/ViajaYa",
-    liveLink: "https://feralarcon1995.github.io/ViajaYa/",
+    github: "https://github.com/feralarcon1995/ViajaYa",
+    live: "https://feralarcon1995.github.io/ViajaYa/",
     next: "lachinafutbol",
     features: [{
       title: "Travel Quote Calculator",
@@ -257,31 +317,41 @@ export const projectData: Project[] = [
     challenges: ["Dynamic currency conversion",
       "User input validation"],
     role: "Developer",
-    duration: "2 months",
+    duration: "3 months",
+    year: "2023",
     colors: {
-      primary: "#00ff9d",
-      secondary: "#007a5e",
-      background: "#121212",
-      text: "#ffffff"
+      primary: "rgba(0, 255, 157, 1)",
+      secondary: "rgba(0, 122, 94, 1)",
+      background: "rgba(18, 18, 18, 1)",
+      text: "rgba(255, 255, 255, 1)"
     }
-
-
   },
   {
     id: "lachinafutbol",
     title: "LA CHINA FUTBOL",
     category: "Football Tournaments",
     summary: "Dynamic venues of each tournament",
+    description: "Dynamic venues of each tournament",
     text: [
       "This project is a comprehensive football application designed to enhance the experience of football enthusiasts. It features a match schedule that allows users to view upcoming matches, detailed team statistics, and player profiles. The application also provides live scores of ongoing matches, ensuring fans stay updated in real-time.",
       "The project faced several challenges, including integrating live match updates, ensuring data accuracy, handling high traffic during major events, and providing real-time notifications."
     ],
     secondary: ["HTML", "CSS", "WORDPRESS", "JAVASCRIPT", "JQUERY", "PHP"],
-    firstImg: "/images/projects/china-1.png",
-    secondImg: "/images/projects/china-2.png",
+    technologies: [],
+    images: [
+      {
+        src: "/images/projects/china-1.png",
+        alt: "LA CHINA FUTBOL project image 1"
+      },
+      {
+        src: "/images/projects/china-2.png",
+        alt: "LA CHINA FUTBOL project image 2"
+      }
+    ],
+    heroImage: "",
     mobileFirst: true,
-    githubLink: "empty",
-    liveLink: "https://lachinafutbol.com/",
+    github: "empty",
+    live: "https://lachinafutbol.com/",
     next: "guia-git",
     features: [
       { title: "Match Schedule", description: "View the schedule of upcoming matches" },
@@ -302,12 +372,13 @@ export const projectData: Project[] = [
       "Implemented real-time notifications"
     ],
     role: "Developer",
-    duration: "2 months",
+    duration: "3 months",
+    year: "2023",
     colors: {
-      primary: "#ff5dd1",
-      secondary: "#b23388",
-      background: "#1a1a1a",
-      text: "#ffffff"
+      primary: "rgba(255, 93, 209, 1)",
+      secondary: "rgba(178, 51, 136, 1)",
+      background: "rgba(26, 26, 26, 1)",
+      text: "rgba(255, 255, 255, 1)"
     }
 
   },
@@ -316,15 +387,26 @@ export const projectData: Project[] = [
     title: "Guia Git",
     category: "Git Guide",
     summary: "A centralized Git guide for beginners",
+    description: "A centralized Git guide for beginners",
     text: [
       "My website is a centralized Git guide designed for beginners, covering everything from setting up Git to mastering both basic and advanced commands. It explains how to install and configure Git, create repositories, and use essential commands like commits, branching, and merging. Additionally, it introduces GitHub as a key collaboration tool, teaching how to connect local projects to remote repositories, manage pull requests, and optimize workflows. This guide is meant to be a practical and accessible resource to help users confidently navigate version control and improve their software development skills."
     ],
     secondary: ["NEXTJS", "TAILWIND", "JAVASCRIPT"],
-    firstImg: "/images/projects/guia-1.png",
-    secondImg: "/images/projects/guia-2.png",
+    technologies: [],
+    images: [
+      {
+        src: "/images/projects/guia-1.png",
+        alt: "Guia Git project image 1"
+      },
+      {
+        src: "/images/projects/guia-2.png",
+        alt: "Guia Git project image 2"
+      }
+    ],
+    heroImage: "",
     mobileFirst: true,
-    githubLink: "empty",
-    liveLink: "https://guia-git.vercel.app/",
+    github: "empty",
+    live: "https://guia-git.vercel.app/",
     next: "moron",
     features: [{
       title: "Next.js Framework",
@@ -361,12 +443,13 @@ export const projectData: Project[] = [
       "Monitored application performance and user interactions with Vercel Analytics"
     ],
     role: "Frontend Developer",
-    duration: "2 months",
+    duration: "1 month",
+    year: "2023",
     colors: {
-      primary: "#ff5b0a",
-      secondary: "#b34307",
-      background: "#1a1a1a",
-      text: "#ffffff"
+      primary: "rgba(255, 91, 10, 1)",
+      secondary: "rgba(179, 67, 7, 1)",
+      background: "rgba(26, 26, 26, 1)",
+      text: "rgba(255, 255, 255, 1)"
     }
   },
   {
@@ -374,12 +457,33 @@ export const projectData: Project[] = [
     title: "Presupuesto Participativo Morón",
     category: "Full Stack Development",
     summary: "A comprehensive digital democracy platform that enables citizens to participate in municipal budget allocation through transparent voting and project tracking.",
+    description: "A comprehensive digital democracy platform that enables citizens to participate in municipal budget allocation through transparent voting and project tracking.",
     text: [
       "The Participatory Budgeting Platform revolutionizes how citizens engage with municipal budget decisions. Built with modern web technologies, it offers an intuitive interface for exploring, voting, and tracking community projects.",
       "This platform features real-time project tracking, secure voting mechanisms, and interactive data visualizations that help citizens understand the impact of their participation.",
       "The system integrates with municipal databases to provide accurate, up-to-date information about project progress, budget allocation, and community impact metrics."
     ],
     secondary: ["NEXTJS", "TYPESCRIPT", "TAILWIND", "SHADCN", "PYTHON", "DJANGORESTFRAMEWORK", "POSTGRESQL"],
+    technologies: [],
+    images: [
+      {
+        src: "/images/projects/moron.png",
+        alt: "Presupuesto Participativo Morón project image"
+      },
+      {
+        src: "/images/projects/moron-1.png",
+        alt: "Presupuesto Participativo Morón project image 1"
+      },
+      {
+        src: "/images/projects/moron-2.png",
+        alt: "Presupuesto Participativo Morón project image 2"
+      }
+    ],
+    heroImage: "",
+    mobileFirst: true,
+    github: "empty",
+    live: "https://presupuestoparticipativomoron.com//",
+    next: "linkinpark",
     features: [
       {
         title: "Headquarters and Project Management",
@@ -411,6 +515,7 @@ export const projectData: Project[] = [
     ],
     role: "Full Stack Developer",
     duration: "4 months",
+    year: "2023",
     challenges: [
       "Implementing data export in different formats",
       "Optimizing queries for vote and proposal counting",
@@ -419,19 +524,11 @@ export const projectData: Project[] = [
       "Engaging diverse community members",
       "Ensuring equitable distribution of resources"
     ],
-    thumbnail: "/images/projects/moron.png",
-    firstImg: "/images/projects/moron-1.png",
-    secondImg: "/images/projects/moron-2.png",
-    mobileFirst: true,
-    githubLink: "empty",
-    liveLink: "https://presupuestoparticipativomoron.com//",
-    next: "linkinpark",
     colors: {
-      primary: "#ff2929",
-      secondary: "#b32121",
-      background: "#1a1a1a",
-      text: "#ffffff"
+      primary: "rgba(255, 41, 41, 1)",
+      secondary: "rgba(179, 33, 33, 1)",
+      background: "rgba(26, 26, 26, 1)",
+      text: "rgba(255, 255, 255, 1)"
     }
-
   }
 ];

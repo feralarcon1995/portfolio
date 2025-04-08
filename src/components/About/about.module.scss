@@ -9,13 +9,16 @@
   flex-wrap: wrap;
   position: relative;
   overflow: hidden;
+
   img {
-    width: 40%;
+    width: 100%;
     height: 1300px;
     object-fit: cover;
     z-index: 1;
     transform-origin: bottom;
     transition: clip-path 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+    position: relative;
+    display: block;
   }
 
   .title {
@@ -27,6 +30,11 @@
     padding: 10px;
     width: 100%;
     position: relative;
+
+    h2 {
+      position: relative;
+      z-index: 2;
+    }
 
     h3 {
       position: absolute;
@@ -44,6 +52,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    width: 100%;
 
     div {
       display: flex;

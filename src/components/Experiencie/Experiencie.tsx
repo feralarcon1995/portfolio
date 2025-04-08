@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react';
-import { motion, useAnimation, useInView, LazyMotion, domAnimation, useTransform, useScroll } from 'framer-motion';
+import { motion, useAnimation, useInView, LazyMotion, domAnimation, useTransform, useScroll, useSpring } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import styles from './style.module.scss';
 import Magnet from '../Magnet/Magnet';
@@ -45,27 +45,53 @@ interface ExperienceItemProps {
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
-    scale: 1,
     opacity: 1,
     transition: {
       staggerChildren: 0.2,
       delayChildren: 0.3,
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1]
     },
   },
 };
 
 const itemVariants = {
-  hidden: { y: 50, opacity: 0 },
+  hidden: {
+    y: 30,
+    opacity: 0,
+    scale: 0.95
+  },
   visible: {
     y: 0,
     opacity: 1,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    scale: 1,
+    transition: {
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1]
+    },
+  },
+};
+
+const titleVariants = {
+  hidden: {
+    y: 50,
+    opacity: 0,
+    scale: 0.95
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 1,
+      ease: [0.22, 1, 0.36, 1]
+    },
   },
 };
 
 const ExperienceItem = React.memo(function ExperienceItem({ experience, index }: ExperienceItemProps) {
   const expRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(expRef, { once: true, amount: 0.3 });
+  const isInView = useInView(expRef, { once: true, amount: 0.2 });
   const controls = useAnimation();
   const stackControls = useAnimation();
 
@@ -73,7 +99,7 @@ const ExperienceItem = React.memo(function ExperienceItem({ experience, index }:
     controls.start('visible');
     const timer = setTimeout(() => {
       stackControls.start('visible');
-    }, 600);
+    }, 800);
     return () => clearTimeout(timer);
   }, [controls, stackControls]);
 
@@ -255,16 +281,26 @@ export default function Experience() {
     }
   ], []);
 
-  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
 
+  // Configuración de scroll con spring para suavizar
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"]
   });
 
-  const h2Y = useTransform(scrollYProgress, [0, 0.5], [-100, 0]);
-  const h3X = useTransform(scrollYProgress, [0, 0.5], [-200, 0]);
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  // Animaciones mejoradas con rangos más suaves
+  const h2Y = useTransform(smoothProgress, [0, 0.3, 0.7, 1], [-100, 0, 0, 100]);
+  const h3X = useTransform(smoothProgress, [0, 0.3, 0.7, 1], [-300, 0, 0, 300]);
+  const opacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const scale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1, 1.2]);
 
   return (
     <LazyMotion features={domAnimation}>
@@ -273,6 +309,10 @@ export default function Experience() {
           <motion.article
             ref={titleRef}
             className={styles.title}
+            style={{
+              opacity,
+              scale
+            }}
           >
             <motion.h2
               style={{

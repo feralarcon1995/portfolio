@@ -70,7 +70,7 @@ const Hero = () => {
         initial="hidden"
         animate={isReady ? "visible" : "hidden"}
         variants={imgVariants}
-        src="/images/herp.webp"
+        src="/images/hero.png"
         alt="fotografia de setup"
       />
       <motion.article

@@ -48,83 +48,82 @@ export default function FeaturesSection({ project }: FeaturesSectionProps) {
 
   return (
     <motion.section className={styles.featuresSection} onMouseMove={handleMouseMove}>
-      <motion.div
-        className={styles.sectionDecoration}
-        initial={{ width: 0 }}
-        whileInView={{ width: "100%" }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, ease: "easeOut" }}
-      />
+      <div className={styles.featuresContainer}>
+        <motion.div
+          className={styles.sectionDecoration}
+          initial={{ width: 0 }}
+          whileInView={{ width: "100%" }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        />
 
-      <motion.h2
-        initial={{ opacity: 0, x: -20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        style={{ color: project.colors.primary }}
-      >
-        Key Features
-      </motion.h2>
+        <motion.h2
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          style={{ color: project.colors.primary }}
+        >
+          Key Features
+        </motion.h2>
 
-      <div className={styles.featuresGrid}>
-        {project.features.map((feature: Feature, index: number) => (
-          <motion.div
-            key={index}
-            className={styles.featureCard}
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{
-              duration: 0.6,
-              delay: 0.1 * index,
-              type: "spring",
-              stiffness: 100,
-            }}
-            whileHover={{
-              y: -15,
-            }}
-          >
-            <div className={styles.title_container}>
-              <h3>{feature.title}</h3>
-              <div
-                className={styles.featureIcon}
-
-              >
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M12 16V12"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M12 8H12.01"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-            </div>
-            <p>{feature.description}</p>
+        <div className={styles.featuresGrid}>
+          {project.features.map((feature: Feature, index: number) => (
             <motion.div
-              className={styles.featureCardBackground}
-              style={{
-                x: x,
-                y: y,
+              key={index}
+              className={styles.featureCard}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.6,
+                delay: 0.1 * index,
+                type: "spring",
+                stiffness: 100,
               }}
-            />
-          </motion.div>
-        ))}
+              whileHover={{
+                y: -15,
+              }}
+            >
+              <div className={styles.title_container}>
+                <h3>{feature.title}</h3>
+                <div className={styles.featureIcon}>
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M12 16V12"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M12 8H12.01"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <p>{feature.description}</p>
+              <motion.div
+                className={styles.featureCardBackground}
+                style={{
+                  x: x,
+                  y: y,
+                }}
+              />
+            </motion.div>
+          ))}
+        </div>
       </div>
     </motion.section>
   )

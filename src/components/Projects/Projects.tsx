@@ -1,15 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import styles from './projects.module.scss';
-import { projectData } from '@/data/projectsData';
+import { projectData, Project } from '@/data/projectsData';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-
-interface Project {
-  id: string;
-  title: string;
-  firstImg: string;
-}
 
 const Projects = React.memo(() => {
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
@@ -136,12 +130,17 @@ const Projects = React.memo(() => {
         <motion.div
           className={styles.cursor_follower}
           animate={{
-            x: cursorPosition.x - 800,
-            y: cursorPosition.y - 400,
+            x: cursorPosition.x - 400,
+            y: cursorPosition.y - 225,
             opacity: 1,
             scale: 1
           }}
-          initial={{ opacity: 0, scale: 0.5 }}
+          initial={{
+            x: cursorPosition.x,
+            y: cursorPosition.y,
+            opacity: 0,
+            scale: 0.5
+          }}
           transition={{
             type: "spring",
             stiffness: 300,
@@ -149,8 +148,8 @@ const Projects = React.memo(() => {
           }}
         >
           <Image
-            src={hoveredProjectData.firstImg}
-            alt={hoveredProjectData.title}
+            src={hoveredProjectData.images[0].src}
+            alt={hoveredProjectData.images[0].alt}
             width={800}
             height={450}
             priority={true}

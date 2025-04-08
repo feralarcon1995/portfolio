@@ -1,103 +1,89 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { Github, ExternalLink } from "lucide-react"
 import styles from "@/pages/projects/projectdetail.module.scss"
-import { Project } from "@/data/projectsData"
-import Magnet from "../Magnet/Magnet"
 
 interface ProjectLinksProps {
-  project: Project
+  project: {
+    github: string
+    live: string
+  }
+  primaryColor: string
 }
 
-export default function ProjectLinks({ project }: ProjectLinksProps) {
+export default function ProjectLinks({ project, primaryColor }: ProjectLinksProps) {
   return (
-    <motion.section
-      className={styles.linksSection}
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-    >
+    <section className={styles.projectLinksSection}>
       <motion.div
-        className={styles.sectionDecoration}
-        initial={{ width: 0 }}
-        whileInView={{ width: "100%" }}
+        className={styles.linksContainer}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 1, ease: "easeOut" }}
-      />
+        transition={{ duration: 0.6 }}
+      >
+        <motion.h2
+          style={{ color: primaryColor }}
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          Project Links
+        </motion.h2>
 
-      <motion.h2 style={{ color: project.colors.primary }}>Project Links</motion.h2>
-
-      <div className={styles.linksContainer}>
-        {project.githubLink !== "empty" && (
-          <Magnet padding={50} disabled={false} magnetStrength={10}>
-            <motion.a
-              href={project.githubLink}
+        <motion.div
+          className={styles.linksWrapper}
+          style={{ backgroundColor: `rgba(${primaryColor}, 0.05)` }}
+        >
+          <motion.div
+            className={styles.linkItem}
+            whileHover={{ scale: 1.05, x: 10 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <a
+              href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.projectLink}
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: "#333",
-              }}
-              whileTap={{ scale: 0.95 }}
+              className={styles.linkButton}
+              style={{ color: primaryColor }}
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className={styles.linkIcon}
+              <motion.div
+                className={styles.iconWrapper}
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.5 }}
               >
-                <path
-                  d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              View on GitHub
-            </motion.a>
-          </Magnet>
-         
-        )}
-        <Magnet padding={50} disabled={false} magnetStrength={10}>
-          <motion.a
-            href={project.liveLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${styles.projectLink} ${styles.liveLink}`}
-            whileHover={{
-              scale: 1.05,
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className={styles.linkIcon}
-            >
-              <path
-                d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path d="M15 3h6v6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M10 14L21 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            View Live Site
-          </motion.a>
-        </Magnet>
+                <Github size={24} />
+              </motion.div>
+              <span>View on GitHub</span>
+            </a>
+          </motion.div>
 
-      </div>
-    </motion.section>
+          <motion.div
+            className={styles.linkItem}
+            whileHover={{ scale: 1.05, x: -10 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <a
+              href={project.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.linkButton}
+              style={{ color: primaryColor }}
+            >
+              <motion.div
+                className={styles.iconWrapper}
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.5 }}
+              >
+                <ExternalLink size={24} />
+              </motion.div>
+              <span>Live Demo</span>
+            </a>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    </section>
   )
 }
 
