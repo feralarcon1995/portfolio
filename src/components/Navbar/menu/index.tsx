@@ -40,7 +40,10 @@ const Menu: React.FC<MenuProps> = ({ closeMenu }) => {
       closeMenu()
       const goHash = (hash: string) => {
         const el = document.querySelector(hash)
-        if (el) el.scrollIntoView({ behavior: 'smooth' })
+        if (el) {
+          const behavior = window.innerWidth < 768 ? 'auto' : 'smooth'
+          el.scrollIntoView({ behavior })
+        }
       }
 
       if (typeof window === 'undefined') return

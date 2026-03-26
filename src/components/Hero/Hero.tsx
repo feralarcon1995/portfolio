@@ -35,7 +35,7 @@ const Hero = () => {
         <div className={styles.heroText}>
           <div className={styles.label}>
             <SplitLines
-              lines={[{ text: 'SYSTEM_INIT_SUCCESS // 2024' }]}
+              lines={[{ text: 'SYSTEM_INIT_SUCCESS // 2020' }]}
               stagger={0.028}
               delayChildren={0.05}
             />

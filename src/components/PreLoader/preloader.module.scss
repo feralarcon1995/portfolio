@@ -72,6 +72,40 @@
   align-items: flex-end;
 }
 
+@media (max-width: 480px) {
+  .metaLeft {
+    top: 1.6rem;
+    left: 1.1rem;
+  }
+
+  .metaRight {
+    top: 1.6rem;
+    right: 1.1rem;
+  }
+
+  .processGrid {
+    margin-top: 3rem;
+    gap: 2rem;
+    padding: 0;
+  }
+
+  .bottom {
+    bottom: 3rem;
+    left: 1.1rem;
+    right: 1.1rem;
+  }
+
+  .progressRow {
+    max-width: 100%;
+    gap: 1.25rem;
+  }
+
+  .enterBtn {
+    padding: 1.05rem 2.25rem;
+    font-size: 0.75rem;
+  }
+}
+
 .metaAccent {
   font-family: var(--pl-head), system-ui, sans-serif;
   font-size: 10px;

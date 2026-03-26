@@ -23,6 +23,9 @@ export const SmoothScrollProvider: React.FC<SmoothScrollProviderProps> = ({ chil
   const [lenis, setLenis] = useState<Lenis | null>(null);
 
   useEffect(() => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    if (isMobile) return;
+
     const smoothEasing = (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
 
     const instance = new Lenis({

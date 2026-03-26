@@ -13,6 +13,29 @@
   overflow: hidden;
 }
 
+@media (max-width: 767px) {
+  .root {
+    overflow-x: hidden;
+    overflow-y: auto;
+    justify-content: flex-start;
+  }
+
+  .main {
+    padding-top: 6.5rem;
+    padding-bottom: 8rem;
+  }
+
+  .linkAnchor {
+    font-size: clamp(3rem, 14vw, 6.25rem);
+  }
+}
+
+@media (max-width: 420px) {
+  .linkAnchor {
+    font-size: clamp(2.6rem, 16vw, 5.15rem);
+  }
+}
+
 .bgGrid {
   position: fixed;
   inset: 0;
