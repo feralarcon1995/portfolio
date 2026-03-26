@@ -59,10 +59,7 @@ export const Layout = ({ children, title, description, showCircularText = true, 
 
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
-        <meta
-          name="google-site-verification"
-          content="Rzd8SbIVpnsPU-pj-nmRWyCJ7uk70isbEulxrksaif4"
-        />
+        <meta name="google-site-verification" content="Rzd8SbIVpnsPU-pj-nmRWyCJ7uk70isbEulxrksaif4" />
         <link rel="canonical" href={pageUrl} />
 
         <meta property="og:type" content="website" />
