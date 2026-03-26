@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { motion, useTransform } from 'framer-motion'
 import { ArrowDown } from 'lucide-react'
 import styles from './hero.module.scss'
@@ -12,16 +12,30 @@ import Link from 'next/link'
 
 const Hero = () => {
   const heroRef = useRef<HTMLElement>(null)
-  const { elementProgressMotion } = useLenisScroll(heroRef as React.RefObject<HTMLElement>)
+  const { elementProgressMotion, lenis } = useLenisScroll(heroRef as React.RefObject<HTMLElement>)
 
   const bgOpacity = useTransform(elementProgressMotion, [0, 1], [0.08, 0])
   const bgY = useTransform(elementProgressMotion, [0, 1], [0, -80])
   const arrowOpacity = useTransform(elementProgressMotion, [0, 0.6], [1, 0])
 
   const circularText = useMemo(
-    () => ' LET&#39;S TALK *',
+    () => ' LET\'S TALK * CONTACT *  GET IN TOUCH *',
     [],
   )
+
+  const goContact = useCallback(() => {
+    if (typeof window === 'undefined') return
+    const el = document.getElementById('contact')
+    if (!el) return
+
+    const isMobile = window.innerWidth < 768
+    if (lenis) {
+      lenis.scrollTo(el, { offset: 0, immediate: isMobile })
+      return
+    }
+
+    el.scrollIntoView({ behavior: isMobile ? 'auto' : 'smooth' })
+  }, [lenis])
 
   return (
     <section ref={heroRef} className={styles.container}>
@@ -89,22 +103,25 @@ const Hero = () => {
           </motion.p>
         </div>
 
-        <motion.div
+        <motion.button
+          type="button"
           className={styles.badge}
           whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.25 }}
-          aria-hidden
+          onClick={goContact}
+          aria-label="Ir a Contact"
         >
-          <div className={styles.badgeSpin}>
+          <div className={styles.badgeSpin} aria-hidden="true">
             <svg viewBox="0 0 100 100" className={styles.badgeSvg}>
               <defs>
                 <path
-                  id="heroCirclePath"
+                  id="badgePath"
                   d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"
                 />
               </defs>
               <text className={styles.badgeText}>
-                <textPath href="#heroCirclePath" startOffset="0%">
+                <textPath href="#badgePath" startOffset="0%">
                   {circularText}
                 </textPath>
               </text>
@@ -113,7 +130,7 @@ const Hero = () => {
           <motion.div className={styles.badgeCenter} style={{ opacity: 1 }} whileHover={{ y: -2 }}>
             <ArrowDown size={26} />
           </motion.div>
-        </motion.div>
+        </motion.button>
 
         <motion.div className={styles.arrowPrompt} style={{ opacity: arrowOpacity }}>
           <span>Scroll</span>

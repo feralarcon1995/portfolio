@@ -189,16 +189,14 @@
 .shapeOct {
   aspect-ratio: 1 / 1;
   height: auto;
-  clip-path: polygon(
-    30% 0%,
-    70% 0%,
-    100% 30%,
-    100% 70%,
-    70% 100%,
-    30% 100%,
-    0% 70%,
-    0% 30%
-  );
+  clip-path: polygon(30% 0%,
+      70% 0%,
+      100% 30%,
+      100% 70%,
+      70% 100%,
+      30% 100%,
+      0% 70%,
+      0% 30%);
   border-radius: 0;
 }
 
@@ -224,7 +222,7 @@
   background: rgba(242, 229, 191, 0.92);
   color: var(--black);
   padding: 1.1rem 1.25rem;
-  max-width: 420px;
+  max-width: 520px;
   border-radius: 0;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
@@ -345,7 +343,7 @@
   display: none;
 }
 
-.worksGrid > :global(*) {
+.worksGrid> :global(*) {
   /* keep overflow visible for negative offsets */
   overflow: visible;
 }
@@ -533,5 +531,15 @@
 
   .cardMedia {
     height: 210px;
+  }
+}
+
+@media (max-width: 600px) {
+  .scatteredCardWrap {
+    max-width: 100%;
+  }
+
+  .overlayBox {
+    max-width: 100%;
   }
 }
