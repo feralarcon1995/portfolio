@@ -7,6 +7,7 @@ import CircularText from '@/components/CircularText/CircularText';
 import { useRouter } from 'next/router';
 import { SmoothScrollProvider } from '@/components/SmoothScroll/SmoothScrollProvider';
 import CustomCursor from '@/components/Experiencie/CustomCursor';
+import { getSiteUrl } from '@/lib/siteUrl';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -37,10 +38,13 @@ const Monument = localFont({
 export const Layout = ({ children, title, description, showCircularText = true, hideChrome = false }: LayoutProps) => {
   const activeSection = useActiveSection();
   const router = useRouter();
+  const siteUrl = getSiteUrl();
 
   const metaDescription = description || "Fernando Alarcon's Portfolio – Frontend Web Developer specializing in building dynamic and responsive user interfaces with React, Next.js, and modern JavaScript frameworks.";
 
   const pageTitle = title ? `${title} | Fernando Alarcon` : `Fernando Alarcon | ${activeSection}`;
+  const pageUrl = `${siteUrl}${router.asPath === '/' ? '' : router.asPath}`;
+  const ogImage = `${siteUrl}/hero.png`;
   return (
     <SmoothScrollProvider>
       <Head>
@@ -55,14 +59,18 @@ export const Layout = ({ children, title, description, showCircularText = true, 
 
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
-        <link rel="canonical" href={`https://feralarcon.vercel.app/${router.asPath}`} />
+        <meta
+          name="google-site-verification"
+          content="Rzd8SbIVpnsPU-pj-nmRWyCJ7uk70isbEulxrksaif4"
+        />
+        <link rel="canonical" href={pageUrl} />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://feralarcon.vercel.app/${router.asPath}`} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:title" content={pageTitle}
         />
         <meta property="og:description" content={metaDescription} />
-        <meta property="og:image" content="/hero.png" />
+        <meta property="og:image" content={ogImage} />
         <meta property="og:site_name" content="Fernando Alarcon | Creative Developer" />
         <meta property="og:locale" content="en_US" />
 
@@ -72,7 +80,7 @@ export const Layout = ({ children, title, description, showCircularText = true, 
         <meta name="twitter:title" content={pageTitle}
         />
         <meta name="twitter:description" content={metaDescription} />
-        <meta name="twitter:image" content="/hero.png" />
+        <meta name="twitter:image" content={ogImage} />
 
         <link rel="icon" href="/favicon.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png" />
@@ -88,8 +96,9 @@ export const Layout = ({ children, title, description, showCircularText = true, 
               "@context": "https://schema.org",
               "@type": "Person",
               "name": "Fernando Alarcon",
-              "url": "https://feralarcon.vercel.app/",
-              "image": "https://feralarcon.vercel.app/images/me.png",
+              "alternateName": ["medicenferpy", "MEDICENFERPY"],
+              "url": `${siteUrl}/`,
+              "image": `${siteUrl}/images/me.png`,
               "jobTitle": "Creative Developer",
               "worksFor": {
                 "@type": "Organization",
