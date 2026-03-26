@@ -137,7 +137,7 @@ export const journalExperiences: JournalExperience[] = [
     title: 'Web Development Teacher',
     company: 'Coderhouse',
     link_company: 'https://www.coderhouse.com/',
-    date: 'October 2021 - December 2024',
+    date: 'Oct 2021 - Dec 2024',
     description:
       'I started as a tutor in 2021, was promoted to coordinator in 2022, and to professor the same year—designing lesson plans, guiding students and the tutoring team, teaching HTML, CSS, SASS, Bootstrap, JavaScript, and Git.',
     bodyParagraphs: [
