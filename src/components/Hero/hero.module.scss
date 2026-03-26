@@ -138,6 +138,11 @@
   position: relative;
   cursor: pointer;
   transform-origin: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .badgeSpin {
@@ -165,13 +170,14 @@
   width: 62px;
   height: 62px;
   border-radius: 999px;
-  background: rgba(242, 229, 191, 0.12);
+  background: transparent;
   color: var(--main-color);
   display: grid;
   place-items: center;
   z-index: 2;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: background-color 240ms ease, color 240ms ease, transform 240ms ease;
 }
 
 .badge:hover .badgeSpin {

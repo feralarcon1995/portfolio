@@ -106,9 +106,6 @@ const Hero = () => {
         <motion.button
           type="button"
           className={styles.badge}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.98 }}
-          transition={{ duration: 0.25 }}
           onClick={goContact}
           aria-label="Ir a Contact"
         >
