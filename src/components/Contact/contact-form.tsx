@@ -29,8 +29,14 @@ const ContactForm = memo(() => {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
   const { elementProgressMotion } = useLenisScroll(sectionRef as unknown as React.RefObject<HTMLElement>);
-  const [formReveal, setFormReveal] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768;
+  });
+  const [formReveal, setFormReveal] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768;
+  });
   const currentYear = new Date().getFullYear();
 
   const titleY = useTransform(elementProgressMotion, [0, 0.62, 1], [0, -52, -92]);
@@ -57,14 +63,16 @@ const ContactForm = memo(() => {
   const smoothContactOutline2Y = useSpring(contactOutline2Y, { stiffness: 52, damping: 21 });
 
   useMotionValueEvent(elementProgressMotion, "change", (v: number) => {
+    if (isMobile) return;
     if (!formReveal && v >= 0.12) setFormReveal(true);
   });
 
   useEffect(() => {
     const checkIfMobile = () => {
-      const isSmallScreen = window.innerWidth < 600;
+      const isSmallScreen = window.innerWidth < 768;
 
       setIsMobile(isSmallScreen);
+      if (isSmallScreen) setFormReveal(true);
     };
 
     checkIfMobile();
@@ -260,24 +268,24 @@ const ContactForm = memo(() => {
       <div className={styles.contactBgLines} aria-hidden="true">
         <motion.div
           className={styles.contactOutline1}
-          style={{ y: smoothContactOutline1Y, opacity: 0.08 }}
+          style={{ y: isMobile ? 0 : smoothContactOutline1Y, opacity: 0.08 }}
         >
           COMMS_RELAY
         </motion.div>
         <motion.div
           className={styles.contactOutline2}
-          style={{ y: smoothContactOutline2Y, opacity: 0.05 }}
+          style={{ y: isMobile ? 0 : smoothContactOutline2Y, opacity: 0.05 }}
         >
           SIGNAL_READY
         </motion.div>
       </div>
       <motion.div
         className={styles.contact_content}
-        style={{ y: smoothBlockY, opacity: smoothBlockOpacity }}
+        style={{ y: isMobile ? 0 : smoothBlockY, opacity: isMobile ? 1 : smoothBlockOpacity }}
       >
         <motion.header
           className={styles.contact_section_header}
-          style={{ y: smoothTitleY, opacity: smoothTitleOpacity }}
+          style={{ y: isMobile ? 0 : smoothTitleY, opacity: isMobile ? 1 : smoothTitleOpacity }}
         >
           <div className={styles.section_kicker}>CONTACT_RESOURCES_V1.0</div>
           <h2 className={styles.section_title}>
@@ -303,7 +311,7 @@ const ContactForm = memo(() => {
 
         <motion.div
           className={styles.terminal_shell}
-          style={{ x: smoothShellX, opacity: smoothShellOpacity }}
+          style={{ x: isMobile ? 0 : smoothShellX, opacity: isMobile ? 1 : smoothShellOpacity }}
         >
           <div className={styles.scanline} aria-hidden="true" />
 
@@ -311,8 +319,8 @@ const ContactForm = memo(() => {
             ref={formRef}
             onSubmit={handleSubmit}
             className={styles.terminal_form}
-            initial="hidden"
-            animate={formReveal ? "visible" : "hidden"}
+            initial={isMobile ? "visible" : "hidden"}
+            animate={isMobile || formReveal ? "visible" : "hidden"}
             variants={containerVariants}
           >
             <div className={styles.terminal_infobar}>
@@ -514,7 +522,7 @@ const ContactForm = memo(() => {
 
         <motion.div
           className={styles.terminal_footer}
-          style={{ y: smoothFooterLineY }}
+          style={{ y: isMobile ? 0 : smoothFooterLineY }}
         >
           END_OF_TRANSMISSION // {currentYear}
         </motion.div>
