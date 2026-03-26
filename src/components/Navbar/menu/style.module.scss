@@ -36,6 +36,25 @@
   }
 }
 
+@media (max-width: 380px) {
+  .main {
+    padding: 6rem 1.1rem 7.5rem;
+  }
+
+  .linkCluster {
+    padding-left: 2.1rem;
+  }
+
+  .linkAnchor {
+    font-size: clamp(2.15rem, 12vw, 4.05rem);
+  }
+
+  .linkIndex {
+    left: -2.1rem;
+    font-size: 11px;
+  }
+}
+
 .bgGrid {
   position: fixed;
   inset: 0;

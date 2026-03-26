@@ -70,6 +70,18 @@ export default function PreLoader({ onLoadingComplete }: { onLoadingComplete?: (
 
   useEffect(() => {
     if (progress < 100 || exiting) return
+    const shouldAutoExit = window.innerWidth < 768
+    if (!shouldAutoExit) return
+
+    const t = window.setTimeout(() => {
+      setExiting(true)
+    }, 120)
+
+    return () => window.clearTimeout(t)
+  }, [progress, exiting])
+
+  useEffect(() => {
+    if (progress < 100 || exiting) return
     const t = window.setTimeout(() => setExiting(true), 40)
     return () => window.clearTimeout(t)
   }, [progress, exiting])

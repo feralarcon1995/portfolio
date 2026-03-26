@@ -4,7 +4,8 @@
   z-index: 2147483000;
   background: #131313;
   color: #e2e2e2;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,36 +74,65 @@
 }
 
 @media (max-width: 480px) {
-  .metaLeft {
-    top: 1.6rem;
-    left: 1.1rem;
+  .overlay {
+    -webkit-overflow-scrolling: touch;
+    align-items: flex-start;
+    justify-content: flex-start;
   }
 
+  .main {
+    padding: 2.25rem 1.1rem 2.75rem;
+    justify-content: flex-start;
+  }
+
+  .metaLeft,
   .metaRight {
-    top: 1.6rem;
-    right: 1.1rem;
+    position: static;
+    align-items: flex-start;
+    margin: 0 0 0.75rem 0;
+    width: 100%;
   }
 
   .processGrid {
-    margin-top: 3rem;
-    gap: 2rem;
+    margin-top: 2rem;
+    gap: 1.6rem;
     padding: 0;
   }
 
+  .title {
+    font-size: clamp(2.35rem, 11vw, 5.6rem);
+    line-height: 0.98;
+  }
+
+  .processValue {
+    font-size: 1rem;
+  }
+
   .bottom {
-    bottom: 3rem;
-    left: 1.1rem;
-    right: 1.1rem;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: 1.6rem;
   }
 
   .progressRow {
     max-width: 100%;
-    gap: 1.25rem;
+    gap: 1.1rem;
+    margin-bottom: 1.25rem;
   }
 
   .enterBtn {
-    padding: 1.05rem 2.25rem;
+    padding: 1.02rem 2.15rem;
     font-size: 0.75rem;
+  }
+
+  .footer {
+    position: relative;
+    padding: 1.5rem 1.1rem 2rem;
+    pointer-events: none;
+    justify-content: flex-start;
+    gap: 1.5rem;
   }
 }
 
