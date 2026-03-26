@@ -1,69 +1,387 @@
-@font-face {
-  font-family: 'MiFuente';
-  src: url('../../pages/fonts/MonumentExtended-Bold.otf');
-}
-
-.preloader_overlay {
+.overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
+  z-index: 2147483000;
+  background: #131313;
+  color: #e2e2e2;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  max-height: 100%;
-  background-color: rgb(0, 0, 0);
-  z-index: 999923199950;
-  overflow: hidden;
+  font-family: var(--pl-body), system-ui, sans-serif;
 }
 
-.preloader_container {
-  background-color: transparent;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
+.gridBg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.031) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+.scanline {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 50%, rgba(242, 229, 191, 0.02) 50%);
+  background-size: 100% 4px;
+}
+
+.main {
+  position: relative;
+  z-index: 20;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem 8rem;
+  box-sizing: border-box;
+
+  @media (min-width: 768px) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.metaLeft {
+  position: absolute;
+  top: 3rem;
+  left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  @media (min-width: 768px) {
+    left: 2.5rem;
+  }
+}
+
+.metaRight {
+  position: absolute;
+  top: 3rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-end;
+}
+
+.metaAccent {
+  font-family: var(--pl-head), system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #f2e5bf;
+  font-weight: 700;
+}
+
+.metaMuted {
+  font-family: var(--pl-head), system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.metaDim {
+  font-family: var(--pl-head), system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.centerWrap {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 600px;
-  height: 300px;
+  max-width: 72rem;
+}
+
+.titleGroup {
   position: relative;
-  z-index: 2;
+  display: inline-block;
+}
+
+.cornerTl {
+  position: absolute;
+  top: -1.5rem;
+  left: -1.5rem;
+  width: 3rem;
+  height: 3rem;
+  border-top: 2px solid #f2e5bf;
+  border-left: 2px solid #f2e5bf;
   pointer-events: none;
 }
 
-
-.percentage_container {
+.cornerBr {
   position: absolute;
-  top: 100%;
-  font-family:'MiFuente';
-  font-size: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #ffffff;
-  letter-spacing: 2px;
+  bottom: -1.5rem;
+  right: -1.5rem;
+  width: 3rem;
+  height: 3rem;
+  border-bottom: 2px solid #f2e5bf;
+  border-right: 2px solid #f2e5bf;
+  pointer-events: none;
 }
 
- .text_container{
-    pointer-events: none;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.title {
+  font-family: var(--pl-head), system-ui, sans-serif;
+  font-size: clamp(3rem, 12vw, 9.5rem);
+  line-height: 0.95;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -0.055em;
+  margin: 0;
+  user-select: none;
+  max-width: 100%;
+  text-align: center;
+}
+
+.processGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  margin-top: 4rem;
+  width: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
   }
-.percentage_digit {
-  display: inline-block;
-  margin: 0 2px;
-  font-family:'MiFuente';
 }
 
-.percentage_symbol {
-  display: inline-block;
-  margin-left: 4px;
-  font-family:'MiFuente';
+.process {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 1.5rem;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+
+.processLabel {
+  font-family: var(--pl-body), system-ui, sans-serif;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.processValue {
+  font-family: var(--pl-head), system-ui, sans-serif;
+  font-size: 1.125rem;
+  color: #f2e5bf;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.bottom {
+  position: absolute;
+  bottom: 4rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+
+  @media (min-width: 768px) {
+    left: 2.5rem;
+    right: 2.5rem;
+  }
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1.75rem;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.progressTrack {
+  flex: 1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progressFill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: #f2e5bf;
+  height: 100%;
+  transition: width 0.08s linear;
+}
+
+.progressLabel {
+  font-family: var(--pl-body), system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #f2e5bf;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.enterBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.15rem 2.75rem;
+  background: #f2e5bf;
+  color: #373016;
+  font-family: var(--pl-head), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.05);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.btnCornerTl {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 12px;
+  height: 12px;
+  border-top: 1px solid #f2e5bf;
+  border-left: 1px solid #f2e5bf;
+  transform: translate(-100%, -100%);
+  transition: transform 0.3s ease;
+}
+
+.btnCornerBr {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 12px;
+  height: 12px;
+  border-bottom: 1px solid #f2e5bf;
+  border-right: 1px solid #f2e5bf;
+  transform: translate(100%, 100%);
+  transition: transform 0.3s ease;
+}
+
+.enterBtn:hover:not(:disabled) .btnCornerTl {
+  transform: translate(0, 0);
+}
+
+.enterBtn:hover:not(:disabled) .btnCornerBr {
+  transform: translate(0, 0);
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 2.25rem 1.5rem;
+  z-index: 50;
+  background: transparent;
+  pointer-events: none;
+  box-sizing: border-box;
+
+  @media (min-width: 768px) {
+    padding: 3rem;
+  }
+}
+
+.footerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  pointer-events: auto;
+}
+
+.footerBrand {
+  font-family: var(--pl-head), system-ui, sans-serif;
+  font-weight: 700;
+  color: #fff;
+  font-size: 1.125rem;
+  letter-spacing: -0.03em;
+}
+
+.footerCopy {
+  font-family: var(--pl-head), system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+.footerLinks {
+  display: flex;
+  gap: 1.75rem;
+  pointer-events: auto;
+}
+
+.footerLink {
+  font-family: var(--pl-head), system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #f2e5bf;
+  }
+}
+
+.decorCorner {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 3rem;
+  z-index: 50;
+  opacity: 0.2;
+  pointer-events: none;
+  display: none;
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+}
+
+.decorInner {
+  width: 8rem;
+  height: 8rem;
+  border-top: 1px solid #fff;
+  border-right: 1px solid #fff;
 }

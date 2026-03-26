@@ -1,31 +1,20 @@
 "use client"
 
 import { useRouter } from "next/router"
-import { Suspense } from "react"
-import { motion, useScroll, useSpring } from "framer-motion"
 import dynamic from "next/dynamic"
-import styles from "./projectdetail.module.scss"
 import { Layout } from "@/layouts/Layout"
 import { projectData } from "@/data/projectsData"
-
-const HeroSection = dynamic(() => import("@/components/ProjectDetail/HeroSection"), { ssr: false })
-const ProjectSummary = dynamic(() => import("@/components/ProjectDetail/ProjectSummary"), { ssr: false })
-const ProjectDescription = dynamic(() => import("@/components/ProjectDetail/ProjectDescription"), { ssr: false })
-const FeaturesSection = dynamic(() => import("@/components/ProjectDetail/FeaturesSection"), { ssr: false })
-const ChallengesHighlights = dynamic(() => import("@/components/ProjectDetail/ChallengesHighlights"), { ssr: false })
-const ProjectLinks = dynamic(() => import("@/components/ProjectDetail/ProjectLinks"), { ssr: false })
-const NextProject = dynamic(() => import("@/components/ProjectDetail/NextProject"), { ssr: false })
-const ProjectImages = dynamic(() => import("@/components/ProjectDetail/ProjectImages"), { ssr: false })
+import { buildProjectDetailViewModel } from "@/lib/projectDetailViewModel"
+import ProjectShowcasePage from "@/components/ProjectDetail/ProjectShowcasePage"
 
 const LoadingState = dynamic(() => import("@/components/ProjectDetail/LoadingState"))
 const NotFoundState = dynamic(() => import("@/components/ProjectDetail/NotFoundState"))
+const Footer = dynamic(() => import("@/components/Footer/Footer"), { ssr: true })
 
 export default function ProjectDetail() {
   const router = useRouter()
-  const { id } = router.query
-
-  const { scrollYProgress } = useScroll()
-  const springScrollY = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 })
+  const rawId = router.query.id
+  const id = typeof rawId === "string" ? rawId : Array.isArray(rawId) ? rawId[0] : undefined
 
   if (!id) {
     return <LoadingState />
@@ -38,40 +27,12 @@ export default function ProjectDetail() {
   }
 
   const nextProject = projectData.find((p) => p.id === project.next)
+  const vm = buildProjectDetailViewModel(project)
 
   return (
-    <Layout title={`${project.title} - Project Details`}>
-      <motion.section
-        className={styles.projectDetailContainer}
-        style={{
-          '--primary-color': project.colors.primary,
-          '--secondary-color': project.colors.secondary,
-          '--background-color': project.colors.background,
-          '--text-color': project.colors.text,
-        } as React.CSSProperties}
-      >
-        <Suspense fallback={<LoadingState />}>
-          <HeroSection project={project} />
-
-          <motion.article className={styles.projectContent}>
-            <ProjectSummary project={project} />
-            <ProjectImages project={project} />
-            <ProjectDescription project={project} textReveal={springScrollY} />
-            <FeaturesSection project={project} />
-
-            {(project.challenges || project.highlights) && (
-              <ChallengesHighlights
-                challenges={project.challenges}
-                highlights={project.highlights}
-                primaryColor={project.colors.primary}
-              />
-            )}
-
-            <ProjectLinks project={project} primaryColor={project.colors.primary} />
-            {nextProject && <NextProject nextProject={nextProject} primaryColor={project.colors.primary} />}
-          </motion.article>
-        </Suspense>
-      </motion.section>
+    <Layout title={project.title} description={project.summary} showCircularText={false}>
+      <ProjectShowcasePage vm={vm} nextProject={nextProject} />
+      <Footer />
     </Layout>
   )
 }

@@ -1,110 +1,131 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import styles from './about.module.scss';
+import React, { useRef } from 'react'
+import Image from 'next/image'
+import { motion, useSpring, useTransform } from 'framer-motion'
+import { useLenisScroll } from '@/hooks/useLenisScroll'
+import { SplitInline } from '@/components/SplitWordsReveal/SplitWordsReveal'
+import styles from './about.module.scss'
 
 const About = React.memo(() => {
-  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const { elementProgressMotion } = useLenisScroll(sectionRef as unknown as React.RefObject<HTMLElement>)
 
-  // Configuración de scroll con spring para suavizar
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
+  // Ajuste del timing: tu "centro visual" ocurre antes de 0.5 en algunos layouts,
+  // así que evitamos que el título/info se desarmen demasiado pronto.
+  // Evita que el headline invada la capa del "outline" cuando la sección está centrada.
+  const titleY = useTransform(elementProgressMotion, [0, 0.6, 1], [0, -72, -110])
+  const titleOpacity = useTransform(elementProgressMotion, [0, 0.65, 1], [1, 1, 0])
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
+  const contentX = useTransform(elementProgressMotion, [0, 0.8, 1], [0, 120, 220])
+  const contentOpacity = useTransform(elementProgressMotion, [0, 0.65, 1], [1, 1, 0.08])
 
-  // Animaciones mejoradas con rangos más suaves
-  const h2Y = useTransform(smoothProgress, [0, 0.3, 0.7, 1], [-100, 0, 0, 100]);
-  const h3X = useTransform(smoothProgress, [0, 0.3, 0.7, 1], [-300, 0, 0, 300]);
-  const opacity = useTransform(smoothProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const scale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1, 1.2]);
+  const imageX = useTransform(elementProgressMotion, [0, 1], [0, 140])
+  const imageScale = useTransform(elementProgressMotion, [0, 1], [1, 0.92])
+
+  const outline1Y = useTransform(elementProgressMotion, [0, 1], [0, -35])
+  const outline2Y = useTransform(elementProgressMotion, [0, 1], [0, -95])
+
+  const smoothTitleY = useSpring(titleY, { stiffness: 80, damping: 25 })
+  const smoothTitleOpacity = useSpring(titleOpacity, { stiffness: 100, damping: 30 })
+  const smoothContentX = useSpring(contentX, { stiffness: 60, damping: 20 })
+  const smoothContentOpacity = useSpring(contentOpacity, { stiffness: 70, damping: 25 })
+  const smoothImageX = useSpring(imageX, { stiffness: 50, damping: 18 })
+  const smoothImageScale = useSpring(imageScale, { stiffness: 60, damping: 22 })
 
   return (
     <section ref={sectionRef} className={styles.container} id="about">
-      <motion.article
-        className={styles.title}
-        style={{
-          opacity,
-          scale
-        }}
-      >
-        <motion.h2
-          style={{
-            y: h2Y,
-          }}
-        >
-          a little bit of me
-        </motion.h2>
-        <motion.h3
-          style={{
-            x: h3X,
-          }}
-        >
-          a little bit of me
-        </motion.h3>
-      </motion.article>
-
-      <motion.article
-        className={styles.about_info}
-        initial={{ y: 100, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.8 }}
-      >
+      <div className={styles.bgLines} aria-hidden="true">
         <motion.div
+          className={styles.outline1}
           style={{
-            overflow: 'hidden',
-            width: '40%',
-            height: '1300px'
+            opacity: 0.09,
+            y: outline1Y,
           }}
         >
-          <motion.img
-            src="/images/me.jpg"
-            alt="foto mia cruzado de brazos, con una remera negra, sonriendo."
-            initial={{ y: '100%' }}
-            animate={{ y: '0%' }}
-            transition={{
-              duration: 1.2,
-              ease: [0.25, 0.46, 0.45, 0.94]
-            }}
+          BUENOS AIRES // 1995
+        </motion.div>
+        <motion.div
+          className={styles.outline2}
+          style={{
+            opacity: 0.06,
+            y: outline2Y,
+          }}
+        >
+          CREATIVE_SYSTEMS
+        </motion.div>
+      </div>
+
+      <div className={styles.grid}>
+        <motion.div className={styles.imageCard} style={{ x: smoothImageX, scale: smoothImageScale }}>
+          <Image
+            src="/images/me.png"
+            alt="Fernando Alarcon"
+            fill
+            sizes="(max-width: 768px) 100vw, 42vw"
+            className={styles.image}
             loading="lazy"
           />
+          <div className={styles.imageBorder} aria-hidden="true" />
+          <div className={styles.profileLabel} aria-hidden="true">
+            DEV_PROFILE
+          </div>
         </motion.div>
-        <motion.div>
-          <motion.p
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8 }}
-          >
-            Let me tell you a bit about myself so you can get to know me better. I was born in Buenos Aires, Argentina, where I still live today, back in 1995.
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ delay: 0.1, duration: 0.8 }}
-          >
-            My name&apos;s Fernando Alarcón, and I&apos;m all about giving my best in everything I do. I believe that in today&apos;s digital world, there&apos;s always a need for more solutions to make the customer experience even better.
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-          >
-            That&apos;s where I come in. I&apos;m passionate about contributing everything I know in my field to meet those demands and help push things forward.
-          </motion.p>
+
+        <motion.div className={styles.manifesto} style={{ x: smoothContentX, opacity: smoothContentOpacity }}>
+          <div className={styles.kicker}>
+            <span className={styles.kickerLine} />
+            <span className={styles.kickerText}>IDENTITY_MANIFESTO</span>
+          </div>
+
+          <motion.h2 style={{ y: smoothTitleY, opacity: smoothTitleOpacity }} className={styles.headline}>
+            <SplitInline
+              segments={[
+                { words: ['Born', 'in'] },
+                { words: ['Buenos', 'Aires'], className: styles.italic },
+                { words: [', 1995.'] },
+              ]}
+              delayChildren={0.06}
+            />
+          </motion.h2>
+
+          <p className={styles.lead}>
+            My name&apos;s Fernando Alarcon, and I&apos;m all about giving my best in everything I do. I believe that
+            in today&apos;s digital world, there&apos;s always a need for more solutions to make the customer experience
+            even better. That&apos;s where I come in.
+          </p>
+
+          <p className={styles.lead}>
+            I&apos;m passionate about contributing everything I know in my field to meet those demands and help push
+            things forward.
+          </p>
+
+          <div className={styles.blocks}>
+            <div className={styles.block}>
+              <div className={styles.blockTitleRow}>
+                <span className={styles.dot} />
+                <span className={styles.blockTitle}>Core Tech Stack</span>
+              </div>
+              <div className={styles.blockValue}>React, Next.js, TypeScript</div>
+              <div className={styles.blockValue}>Framer Motion, GSAP, Lenis</div>
+              <div className={styles.blockValue}>Tailwind, Bootstrap, SCSS</div>
+              <div className={styles.blockValue}>HTML, CSS, JavaScript</div>
+              <div className={styles.blockValue}>Figma, Photoshop, Illustrator</div>
+
+            </div>
+            <div className={styles.block}>
+              <div className={styles.blockTitleRow}>
+                <span className={styles.dot} />
+                <span className={styles.blockTitle}>Primary Focus</span>
+              </div>
+              <div className={styles.blockValue}>Interactive systems &amp; Pixel Perfect UI</div>
+              <div className={styles.blockValue}>Responsive UI &amp; Crafting</div>
+            </div>
+          </div>
         </motion.div>
-      </motion.article>
+      </div>
     </section>
-  );
-});
+  )
+})
 
-About.displayName = 'About';
+About.displayName = 'About'
 
-export default About;
+export default About

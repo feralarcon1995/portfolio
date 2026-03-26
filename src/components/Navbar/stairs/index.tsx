@@ -23,7 +23,7 @@ const Stair: React.FC<StairProps> = ({ index }) => {
     <motion.div
       variants={height}
       {...mountAnim}
-      custom={4 - index}
+      custom={index}
       className={styles.stair}
     />
   );

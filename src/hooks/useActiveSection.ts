@@ -8,9 +8,11 @@ export const useActiveSection = () => {
       const sections = document.querySelectorAll('section[id]');
       const scrollPosition = window.scrollY;
       const windowHeight = window.innerHeight;
-      const isProjectPage = window.location.pathname.startsWith('/projects/');
+      const path = window.location.pathname;
+      const skipHomeHashSync =
+        path.startsWith('/projects/') || path.startsWith('/journal/');
 
-      if (scrollPosition < windowHeight * 0.5 && !isProjectPage) {
+      if (scrollPosition < windowHeight * 0.5 && !skipHomeHashSync) {
         setActiveSection('Home');
         history.replaceState(null, '', '/');
         return;
@@ -22,7 +24,11 @@ export const useActiveSection = () => {
         const sectionHeight = sectionElement.clientHeight;
         const sectionId = sectionElement.getAttribute('id') || '';
 
-        if (scrollPosition >= sectionTop - 100 && scrollPosition < sectionTop + sectionHeight - 100 && !isProjectPage) {
+        if (
+          scrollPosition >= sectionTop - 100 &&
+          scrollPosition < sectionTop + sectionHeight - 100 &&
+          !skipHomeHashSync
+        ) {
           setActiveSection(sectionId.charAt(0).toUpperCase() + sectionId.slice(1));
           history.replaceState(null, '', `#${sectionId}`);
         }

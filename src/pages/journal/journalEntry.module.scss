@@ -1,0 +1,371 @@
+.root {
+  --bg: #0a0a0a;
+  --ink: #f2e5bf;
+  --muted: rgba(242, 229, 191, 0.45);
+  --dim: #666666;
+  --line: rgba(255, 255, 255, 0.08);
+  background: var(--bg);
+  color: #fff;
+  min-height: 0;
+  padding: 5.5rem 1.5rem 3rem;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--ink);
+  }
+}
+
+.hero {
+  max-width: 1200px;
+  margin: 0 auto 3.5rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.entryTag {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+
+  &::before {
+    content: '';
+    width: 2px;
+    align-self: stretch;
+    min-height: 2.5rem;
+    background: var(--ink);
+    opacity: 0.5;
+  }
+}
+
+.entryTagInner {
+  font-family: ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding-top: 0.15rem;
+}
+
+.headGrid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.titleBlock {
+  max-width: 52rem;
+}
+
+.company {
+  font-family: var(--font-monument), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: clamp(2rem, 5.5vw, 4rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0 0 0.35rem;
+}
+
+.companySuffix {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.role {
+  font-family: var(--font-monument), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.35rem, 3.2vw, 2.35rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  min-width: min(100%, 280px);
+  padding-top: 0.25rem;
+}
+
+.metaBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.metaLabel {
+  font-family: ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+}
+
+.metaValue {
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.metaValueAccent {
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.grid2 {
+  max-width: 1200px;
+  margin: 0 auto 4rem;
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 0.95fr);
+  gap: 2.5rem;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.copyCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.copyBlock {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.copyIndex {
+  font-family: var(--font-monument), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.08);
+}
+
+.copyText {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.visualCol {
+  position: relative;
+}
+
+.visualFrame {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #111;
+  aspect-ratio: 4 / 3;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+}
+
+.visualImg {
+  object-fit: cover;
+}
+
+.visualCaption {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-family: ui-monospace, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+.stackSection {
+  max-width: 1200px;
+  margin: 0 auto 4rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.stackHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stackTitle {
+  font-family: var(--font-monument), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.stackCount {
+  font-family: ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+}
+
+.stackRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+
+  @media (max-width: 1000px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stackCell {
+  padding: 1.35rem 1.25rem;
+  background: rgba(10, 10, 10, 0.92);
+}
+
+.stackLabel {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: var(--ink);
+  margin-bottom: 0.65rem;
+  font-weight: 600;
+}
+
+.stackName {
+  font-family: var(--font-monument), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.testimonials {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line);
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.testimonialsSingle {
+  grid-template-columns: 1fr;
+}
+
+.testimonialsTitle {
+  font-family: var(--font-monument), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.35rem;
+  grid-column: 1 / -1;
+}
+
+.testimonialCard {
+  padding: 1.5rem 1.35rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-left-color: var(--card-accent, var(--ink));
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.testimonialQuote {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+  white-space: pre-line;
+}
+
+.testimonialFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.testimonialAuthor {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.testimonialRole {
+  font-size: 0.75rem;
+  color: var(--dim);
+  line-height: 1.4;
+}
+
+.testimonialLink {
+  font-family: ui-monospace, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  text-decoration: none;
+  margin-top: 0.35rem;
+  align-self: flex-start;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.companyLink {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  text-decoration: none;
+  text-transform: uppercase;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

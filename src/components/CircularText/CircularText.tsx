@@ -99,7 +99,7 @@ const CircularText: React.FC<CircularTextProps> = ({
   };
 
   return (
-    <Link href="#contact-form" className={styles.wrapper}>
+    <Link href="#contact" className={styles.wrapper}>
       <motion.div
         initial={{ rotate: 0 }}
         className={`${styles.circular_text} ${className}`}

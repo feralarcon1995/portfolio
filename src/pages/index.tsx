@@ -30,7 +30,7 @@ const Contact = dynamic(() => import("@/components/Footer/Footer"), {
 
 export default function Home() {
   return (
-    <Layout description="Home page">
+    <Layout description="Home page" showCircularText={false}>
       <Hero />
       <About />
       <Experiencie />

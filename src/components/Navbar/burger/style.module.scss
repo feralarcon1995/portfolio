@@ -1,85 +1,49 @@
-.logo {
-  font-family: var(--font-monument);
-  padding: 10px;
-  height: 30px;
+.nav {
   position: fixed;
-  left: 0;
   top: 0;
-  margin: 10px;
-  mix-blend-mode: difference;
-  cursor: pointer;
-  z-index: 222;
-}
-.button {
-  width: 200px;
-  height: 30px;
-  background-color: var(--light);
+  left: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
-  right: 0;
-  top: 0;
-  padding: 10px;
-  z-index: 2;
+  padding: 1.5rem 2rem;
+  z-index: 350;
+  color: #fff;
+  pointer-events: none;
+}
+
+.nav > * {
+  pointer-events: auto;
+}
+
+.logo {
+  font-family: var(--font-monument);
+  font-weight: 900;
+  font-size: clamp(1rem, 1.25vw, 1.35rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
+  text-decoration: none;
+}
+
+.menuTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  background: none;
+  border: none;
   cursor: pointer;
-  mix-blend-mode: difference;
-  border-radius: 1000px;
-  margin: 10px;
-  overflow: hidden;
-
-  p {
-    display: none;
-    color: #000;
-    margin: 0px;
-    text-transform: uppercase;
-    transition: color 0.5s;
-    font-family: var(--font-monument);
-  }
-
-  svg {
-    line {
-      transition: stroke 0.5s;
-    }
-  }
-
-  .background {
-    background-color: var(--main-color);
-    width: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: -1;
-    height: 0;
-    transition: height 0.3s;
-  }
-
-  &:hover {
-    p {
-      color: var(--black);
-    }
-    svg {
-      line {
-        stroke: var(--black);
-      }
-    }
-    .background {
-      height: 100%;
-    }
-  }
+  color: #fff;
+  transition: transform 0.2s ease;
 }
 
-@media only screen and (min-width: 600px) {
-  .button {
-    height: 60px;
-    p {
-      display: block;
-    }
-  }
+.menuTrigger:hover {
+  transform: scale(1.08);
 }
 
-@media (max-width: 600px) {
-  .button {
-    width: max-content
-  }
+.menuIcon {
+  font-size: 1.875rem;
+  line-height: 1;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }

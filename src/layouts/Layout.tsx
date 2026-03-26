@@ -5,11 +5,15 @@ import Navbar from '@/components/Navbar/Navbar';
 import { useActiveSection } from '@/hooks/useActiveSection';
 import CircularText from '@/components/CircularText/CircularText';
 import { useRouter } from 'next/router';
+import { SmoothScrollProvider } from '@/components/SmoothScroll/SmoothScrollProvider';
+import CustomCursor from '@/components/Experiencie/CustomCursor';
 
 interface LayoutProps {
   children: React.ReactNode;
   description?: string;
   title?: string;
+  showCircularText?: boolean;
+  hideChrome?: boolean;
 }
 
 const BricolageGrotestk = localFont({
@@ -30,7 +34,7 @@ const Monument = localFont({
   weight: "900",
 });
 
-export const Layout = ({ children, title, description }: LayoutProps) => {
+export const Layout = ({ children, title, description, showCircularText = true, hideChrome = false }: LayoutProps) => {
   const activeSection = useActiveSection();
   const router = useRouter();
 
@@ -38,7 +42,7 @@ export const Layout = ({ children, title, description }: LayoutProps) => {
 
   const pageTitle = title ? `${title} | Fernando Alarcon` : `Fernando Alarcon | ${activeSection}`;
   return (
-    <>
+    <SmoothScrollProvider>
       <Head>
         <title>
           {pageTitle}
@@ -85,7 +89,7 @@ export const Layout = ({ children, title, description }: LayoutProps) => {
               "@type": "Person",
               "name": "Fernando Alarcon",
               "url": "https://feralarcon.vercel.app/",
-              "image": "https://feralarcon.vercel.app//images/me.jpg",
+              "image": "https://feralarcon.vercel.app/images/me.png",
               "jobTitle": "Creative Developer",
               "worksFor": {
                 "@type": "Organization",
@@ -103,15 +107,18 @@ export const Layout = ({ children, title, description }: LayoutProps) => {
         />
       </Head>
       <main className={`${Monument.variable} ${BricolageGrotestk.variable} ${FounderGrotestk.variable}`}>
-        <CircularText
-          text=" CONTACT * LET&#39;S TALK *"
-          onHover="pause"
-          spinDuration={10}
-          className="custom-class"
-        />
-        <Navbar />
+        {!hideChrome && <CustomCursor text="" />}
+        {!hideChrome && showCircularText && (
+          <CircularText
+            text=" CONTACT * LET&#39;S TALK *"
+            onHover="pause"
+            spinDuration={10}
+            className="custom-class"
+          />
+        )}
+        {!hideChrome && <Navbar />}
         {children}
       </main>
-    </>
+    </SmoothScrollProvider>
   )
 }

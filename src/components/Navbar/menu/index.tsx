@@ -1,44 +1,17 @@
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { opacity, slideLeft, mountAnim } from '../anim';
+import { opacity, slideLeft, mountAnim, rotateX } from '../anim';
 import styles from './style.module.scss';
-import CustomLink from './Link';
-import LinkedinIcon from '@/icons/LinkedinIcon';
 import Link from 'next/link';
-import GithubIcon from '@/icons/GithubIcon';
-import XIcon from '@/icons/XIcon';
+import { useRouter } from 'next/router';
 
-interface MenuItem {
-  title: string;
-  description: string;
-  path_url: string;
-}
+export type NavItem = { label: string; href: string };
 
-export const menu: MenuItem[] = [
-  {
-    title: "Home",
-    description: "let's Make This Crazy Idea Come True",
-    path_url: '/'
-  },
-  {
-    title: "About me",
-    description: "A Little Bit Of Me",
-    path_url: '#about'
-  },
-  {
-    title: "My Journal",
-    description: "What I've Leanerd Along the Way",
-    path_url: '#experiencie'
-  },
-  {
-    title: "Projects",
-    description: "To See Everything",
-    path_url: '#projects'
-  },
-  {
-    title: "Contact",
-    description: "Let's Get In Touch",
-    path_url: '#contact'
-  }
+export const menuNavItems: NavItem[] = [
+  { label: 'WORK', href: '#projects' },
+  { label: 'ABOUT', href: '#about' },
+  { label: 'JOURNAL', href: '#experiencie' },
+  { label: 'CONTACT', href: '#contact' },
 ];
 
 interface MenuProps {
@@ -46,57 +19,242 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({ closeMenu }) => {
+  const router = useRouter();
+  const [utcTime, setUtcTime] = useState('');
+
+  useEffect(() => {
+    const tick = () => {
+      const t = new Date();
+      const h = String(t.getUTCHours()).padStart(2, '0');
+      const m = String(t.getUTCMinutes()).padStart(2, '0');
+      const s = String(t.getUTCSeconds()).padStart(2, '0');
+      setUtcTime(`${h}:${m}:${s}`);
+    };
+    tick()
+    const id = window.setInterval(tick, 1000)
+    return () => window.clearInterval(id)
+  }, []);
+
+  const navigateTo = useCallback(
+    (path: string) => {
+      closeMenu()
+      const goHash = (hash: string) => {
+        const el = document.querySelector(hash)
+        if (el) el.scrollIntoView({ behavior: 'smooth' })
+      }
+
+      if (typeof window === 'undefined') return
+
+      const isProjectPage = window.location.pathname.startsWith('/projects/')
+
+      if (path.startsWith('#')) {
+        if (router.pathname === '/') {
+          window.setTimeout(() => goHash(path), 80)
+          return
+        }
+        if (isProjectPage) {
+          void router.push('/').then(() => {
+            window.setTimeout(() => goHash(path), 120)
+          })
+          return
+        }
+        void router.push(`/#${path.slice(1)}`).then(() => {
+          window.setTimeout(() => goHash(path), 120)
+        })
+        return
+      }
+
+      void router.push(path)
+    },
+    [closeMenu, router]
+  );
+
+  const onNavClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault()
+    navigateTo(href)
+  };
+
+  const year = new Date().getFullYear();
+
   return (
-    <div className={styles.menu}>
-      <div className={styles.header}>
-        <motion.svg
+    <div className={styles.root}>
+      <div className={styles.bgGrid} aria-hidden />
+      <div className={styles.bgDrift} aria-hidden>
+        <div className={`${styles.driftSquare} ${styles.driftA}`} />
+        <div className={`${styles.driftSquare} ${styles.driftB}`} />
+        <div className={`${styles.driftSquare} ${styles.driftC}`} />
+        <div className={`${styles.driftSquare} ${styles.driftD}`} />
+      </div>
+      <div className={styles.ghostSystem} aria-hidden>
+        SYSTEM_STABLE
+      </div>
+      <div className={styles.ghostLatency} aria-hidden>
+        LATENCY: 14MS
+      </div>
+
+      <nav className={styles.topNav}>
+        <Link href="/" className={styles.brand} onClick={() => closeMenu()}>
+          MEDICENFERPY
+        </Link>
+        <div className={styles.topNavRight}>
+          <div className={styles.topNavLinks}>
+            {menuNavItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className={styles.topNavLink}
+                onClick={(e) => onNavClick(e, item.href)}
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+          <motion.button
+            type="button"
+            variants={slideLeft}
+            {...mountAnim}
+            className={styles.iconButton}
+            onClick={closeMenu}
+            aria-label="Close menu"
+          >
+            <span className={`material-symbols-outlined ${styles.materialIcon}`}>close</span>
+          </motion.button>
+        </div>
+      </nav>
+
+      <div className={styles.mobileHeader}>
+        <div className={styles.mobileStatus}>
+          <span className={styles.mobileStatusPrimary}>MEDICENFERPY</span>
+          <span className={styles.mobileStatusMuted}>SYSTEM_STATUS: ACTIVE</span>
+        </div>
+        <motion.button
+          type="button"
           variants={slideLeft}
           {...mountAnim}
+          className={styles.mobileClose}
           onClick={closeMenu}
-          width="50"
-          height="50"
-          viewBox="0 0 68 68"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg">
-          <path d="M1.5 1.5L67 67" stroke="white" strokeWidth="3" />
-          <path d="M66.5 1L0.999997 66.5" stroke="white" strokeWidth="3" />
-        </motion.svg>
+          aria-label="Close menu"
+        >
+          <span className={`material-symbols-outlined ${styles.materialIconLarge}`}>close</span>
+        </motion.button>
       </div>
 
-      <div className={styles.body}>
-        {
-          menu.map((el, index) => (
-            <CustomLink data={el} index={index} key={index} onClick={closeMenu} />
-          ))
-        }
-      </div>
+      <main className={styles.main}>
+        <motion.div variants={opacity} {...mountAnim} custom={0.08} className={styles.meta}>
+          <div className={styles.metaPrimary}>EDITORIAL_V1</div>
+          <div className={styles.metaSecondary}>
+            SYSTEM_STATUS: ACTIVE // OVERLAY_MODE: FULL
+          </div>
+        </motion.div>
 
-      <motion.div
+        <div className={styles.linkCluster}>
+          {menuNavItems.map((item, index) => (
+            <motion.div
+              key={item.href}
+              variants={rotateX}
+              {...mountAnim}
+              custom={index}
+              className={styles.linkRow}
+            >
+              <span className={styles.linkIndex}>
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <a
+                href={item.href}
+                className={`${styles.linkAnchor} ${index === 0 ? styles.linkAnchorActive : ''}`}
+                onClick={(e) => onNavClick(e, item.href)}
+              >
+                {item.label}
+              </a>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div variants={opacity} {...mountAnim} custom={0.42} className={styles.ctaWrap}>
+          <button
+            type="button"
+            className={styles.cta}
+            onClick={() => navigateTo('#contact')}
+          >
+            START_PROJECT
+          </button>
+        </motion.div>
+      </main>
+
+      <motion.footer
         variants={opacity}
         {...mountAnim}
-        custom={0.5}
-        className={styles.footer}>
-        <div className={styles.footer_social}>
-          <h3>How to reach me</h3>
-          <div>
-            <Link href="https://www.linkedin.com/in/feralarcon1995/" target="_blank">
-              <LinkedinIcon />
-            </Link>
-            <Link href="https://github.com/feralarcon1995" target="_blank">
-              <GithubIcon />
-            </Link>
-            <Link href="https://x.com/medicenferpy" target="_blank">
-              <XIcon />
-            </Link>
+        custom={0.32}
+        className={styles.shellFooter}
+      >
+        <div className={styles.footerLeft}>
+          <div className={styles.footerMeta}>
+            <span className={`material-symbols-outlined ${styles.footerIcon}`}>location_on</span>
+            <span className={styles.footerMetaText}>ARG_BUE</span>
           </div>
         </div>
-
-        <div className={styles.footer_text}>
-          <p>Based in Buenos Aires. Argentina.</p>
-          <p>feralarcon1995@gmail.com</p>
+        <div className={styles.footerSocial}>
+          <a
+            href="https://github.com/feralarcon1995"
+            className={styles.footerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GITHUB
+          </a>
+          <a
+            href="https://www.linkedin.com/in/feralarcon1995/"
+            className={styles.footerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LINKEDIN
+          </a>
         </div>
-      </motion.div>
-    </div >
+        <div className={styles.footerCopyright}>©{year}_MEDICENFERPY</div>
+      </motion.footer>
+
+      <div className={styles.mobileFooterInner}>
+        <div className={styles.mobileFooterCol}>
+          <div className={styles.mobileFooterSocial}>
+            <a
+              href="https://github.com/feralarcon1995"
+              className={styles.footerLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GITHUB
+            </a>
+            <a
+              href="https://www.linkedin.com/in/feralarcon1995/"
+              className={styles.footerLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LINKEDIN
+            </a>
+          </div>
+          <p className={styles.mobileCopyright}>©{year}_MEDICENFERPY</p>
+        </div>
+        <div className={styles.mobileFooterMeta}>
+          <div className={styles.mobileMetaRow}>
+            <span className={`material-symbols-outlined ${styles.footerIcon}`}>location_on</span>
+            <span className={styles.mobileMetaText}>ARG_BUE</span>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.corners} aria-hidden>
+        <div className={`${styles.corner} ${styles.cornerTl}`} />
+        <div className={`${styles.corner} ${styles.cornerTr}`} />
+        <div className={`${styles.corner} ${styles.cornerBl}`} />
+        <div className={`${styles.corner} ${styles.cornerBr}`} />
+      </div>
+
+      <div className={styles.mobileBgWord} aria-hidden>
+        MEDICENFERPY
+      </div>
+    </div>
   );
 };
 

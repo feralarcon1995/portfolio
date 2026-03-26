@@ -1,0 +1,26 @@
+.splitRoot {
+  display: inline;
+}
+
+.splitRootBlock {
+  display: block;
+}
+
+.line {
+  display: block;
+}
+
+.mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.inner {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.space {
+  display: inline;
+}
