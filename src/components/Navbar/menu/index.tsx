@@ -8,9 +8,9 @@ import { useRouter } from 'next/router';
 export type NavItem = { label: string; href: string };
 
 export const menuNavItems: NavItem[] = [
-  { label: 'WORK', href: '#projects' },
   { label: 'ABOUT', href: '#about' },
   { label: 'JOURNAL', href: '#experiencie' },
+  { label: 'WORK', href: '#projects' },
   { label: 'CONTACT', href: '#contact' },
 ];
 
@@ -21,6 +21,53 @@ interface MenuProps {
 const Menu: React.FC<MenuProps> = ({ closeMenu }) => {
   const router = useRouter();
   const [utcTime, setUtcTime] = useState('');
+  const [activeHref, setActiveHref] = useState<string>(menuNavItems[0]?.href ?? '#about');
+
+  useEffect(() => {
+    let rafId = 0;
+    const computeActiveHref = () => {
+      const hasWindow = typeof window !== 'undefined';
+      if (!hasWindow) return;
+
+      const y = window.scrollY + 140;
+
+      const items = menuNavItems
+        .map((item) => {
+          const id = item.href.replace(/^#/, '');
+          const el = document.getElementById(id);
+          return el ? { href: item.href, offsetTop: el.offsetTop } : null;
+        })
+        .filter(Boolean) as Array<{ href: string; offsetTop: number }>;
+
+      if (items.length === 0) {
+        const isProjectPage = window.location.pathname.startsWith('/projects/');
+        setActiveHref(isProjectPage ? '#projects' : '#about');
+        return;
+      }
+
+      let current = items[0].href;
+      for (const item of items) {
+        if (item.offsetTop <= y) current = item.href;
+      }
+      setActiveHref(current);
+    };
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        computeActiveHref();
+      });
+    };
+
+    computeActiveHref();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   useEffect(() => {
     const tick = () => {
@@ -164,7 +211,7 @@ const Menu: React.FC<MenuProps> = ({ closeMenu }) => {
               </span>
               <a
                 href={item.href}
-                className={`${styles.linkAnchor} ${index === 0 ? styles.linkAnchorActive : ''}`}
+                className={`${styles.linkAnchor} ${activeHref === item.href ? styles.linkAnchorActive : ''}`}
                 onClick={(e) => onNavClick(e, item.href)}
               >
                 {item.label}

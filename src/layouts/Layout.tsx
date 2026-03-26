@@ -120,6 +120,7 @@ export const Layout = ({ children, title, description, showCircularText = true, 
         {!hideChrome && showCircularText && (
           <CircularText
             text=" CONTACT * LET&#39;S TALK *"
+            href="#about"
             onHover="pause"
             spinDuration={10}
             className="custom-class"

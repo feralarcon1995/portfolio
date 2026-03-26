@@ -6,6 +6,7 @@ import Link from "next/link";
 import EmailIcon from "@/icons/EmailIcon";
 interface CircularTextProps {
   text: string;
+  href?: string
   spinDuration?: number;
   onHover?: "slowDown" | "speedUp" | "pause" | "goBonkers";
   className?: string;
@@ -35,6 +36,7 @@ const getTransition = (duration: number, from: number) => ({
 
 const CircularText: React.FC<CircularTextProps> = ({
   text,
+  href = "#about",
   spinDuration = 20,
   onHover = "speedUp",
   className = "",
@@ -99,7 +101,7 @@ const CircularText: React.FC<CircularTextProps> = ({
   };
 
   return (
-    <Link href="#contact" className={styles.wrapper}>
+    <Link href={href} className={styles.wrapper}>
       <motion.div
         initial={{ rotate: 0 }}
         className={`${styles.circular_text} ${className}`}

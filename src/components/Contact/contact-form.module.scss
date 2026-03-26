@@ -645,16 +645,17 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  margin-top: 1.5rem;
+  align-items: center;
+  margin-top: 1rem;
   position: relative;
 }
 
 .recaptcha_container :global(.g-recaptcha) {
   display: flex;
   justify-content: center;
-  width: 100%;
-  max-width: 304px; // "normal" típico del widget
+  width: auto;
+  max-width: 320px; // "normal" típico del widget
+  margin: 0 auto;
 }
 
 .recaptcha_container :global(iframe) {
@@ -663,14 +664,14 @@
 
 @media (max-width: 768px) {
   .recaptcha_container :global(.g-recaptcha) {
-    transform: scale(0.92);
+    transform: scale(0.88);
     transform-origin: bottom center;
   }
 
   .grecaptcha-badge {
     position: absolute !important;
-    bottom: 0 !important;
-    right: 0 !important;
+    bottom: -4px !important;
+    right: -2px !important;
   }
 }
 
