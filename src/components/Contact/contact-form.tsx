@@ -462,7 +462,7 @@ const ContactForm = memo(() => {
               <ReCAPTCHA
                 ref={recaptchaRef}
                 sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
-                size={isMobile ? "normal" : "invisible"}
+                size={isMobile ? "compact" : "invisible"}
                 badge="bottomright"
                 onChange={handleCaptchaChange}
               />
