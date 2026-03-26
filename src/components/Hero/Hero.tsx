@@ -19,7 +19,7 @@ const Hero = () => {
   const arrowOpacity = useTransform(elementProgressMotion, [0, 0.6], [1, 0])
 
   const circularText = useMemo(
-    () => ' ARGENTINA • FULLSTACK DEVELOPER • ',
+    () => ' LET&#39;S TALK *',
     [],
   )
 
