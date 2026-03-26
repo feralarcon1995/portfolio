@@ -73,69 +73,6 @@
   align-items: flex-end;
 }
 
-@media (max-width: 480px) {
-  .overlay {
-    -webkit-overflow-scrolling: touch;
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
-
-  .main {
-    padding: 2.25rem 1.1rem 2.75rem;
-    justify-content: flex-start;
-  }
-
-  .metaLeft,
-  .metaRight {
-    position: static;
-    align-items: flex-start;
-    margin: 0 0 0.75rem 0;
-    width: 100%;
-  }
-
-  .processGrid {
-    margin-top: 2rem;
-    gap: 1.6rem;
-    padding: 0;
-  }
-
-  .title {
-    font-size: clamp(2.35rem, 11vw, 5.6rem);
-    line-height: 0.98;
-  }
-
-  .processValue {
-    font-size: 1rem;
-  }
-
-  .bottom {
-    position: relative;
-    bottom: auto;
-    left: auto;
-    right: auto;
-    margin-top: 1.6rem;
-  }
-
-  .progressRow {
-    max-width: 100%;
-    gap: 1.1rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .enterBtn {
-    padding: 1.02rem 2.15rem;
-    font-size: 0.75rem;
-  }
-
-  .footer {
-    position: relative;
-    padding: 1.5rem 1.1rem 2rem;
-    pointer-events: none;
-    justify-content: flex-start;
-    gap: 1.5rem;
-  }
-}
-
 .metaAccent {
   font-family: var(--pl-head), system-ui, sans-serif;
   font-size: 10px;
@@ -448,4 +385,77 @@
   height: 8rem;
   border-top: 1px solid #fff;
   border-right: 1px solid #fff;
+}
+
+@media (max-width: 480px) {
+  .overlay {
+    -webkit-overflow-scrolling: touch;
+    align-items: flex-start;
+    justify-content: space-between;
+    min-height: 100svh;
+    flex-direction: column;
+  }
+
+  .main {
+    padding: 1.05rem 1.1rem 1.75rem;
+    justify-content: flex-start;
+    gap: 3rem;
+    min-height: 60svh;
+    max-height: 100%;
+  }
+
+  .centerWrap {
+    justify-content: flex-start;
+  }
+
+  .metaLeft,
+  .metaRight {
+    position: static;
+    align-items: flex-start;
+    margin: 0 0 0.75rem 0;
+    width: 100%;
+  }
+
+  .processGrid {
+    margin-top: 2rem;
+    gap: 1.6rem;
+    padding: 0;
+  }
+
+  .title {
+    font-size: clamp(2.35rem, 11vw, 5.6rem);
+    line-height: 0.98;
+    text-align: center;
+  }
+
+  .processValue {
+    font-size: 1rem;
+  }
+
+  .bottom {
+    position: static;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: 0.65rem;
+  }
+
+  .progressRow {
+    max-width: 100%;
+    gap: 1.1rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .enterBtn {
+    padding: 1.02rem 2.15rem;
+    font-size: 0.75rem;
+  }
+
+  .footer {
+    position: static;
+    padding: 1.5rem 1.1rem 2rem;
+    pointer-events: none;
+    justify-content: flex-start;
+    gap: 1.5rem;
+  }
 }

@@ -18,6 +18,9 @@
     overflow-x: hidden;
     overflow-y: auto;
     justify-content: flex-start;
+    min-height: 100svh;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
   }
 
   .main {
@@ -42,7 +45,7 @@
   }
 
   .linkCluster {
-    padding-left: 2.1rem;
+    padding-left: 0;
   }
 
   .linkAnchor {
@@ -139,6 +142,7 @@
 }
 
 @media (max-width: 767px) {
+
   .ghostSystem,
   .ghostLatency {
     display: none;
@@ -304,7 +308,7 @@
   }
 }
 
-.mobileHeader > * {
+.mobileHeader>* {
   pointer-events: auto;
 }
 

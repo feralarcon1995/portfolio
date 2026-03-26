@@ -42,7 +42,7 @@ export default function PreLoader({ onLoadingComplete }: { onLoadingComplete?: (
   const completeOnce = useRef(false)
 
   useEffect(() => {
-    const totalDuration = 2600
+    const totalDuration = 1600
     const intervalTime = 32
     const totalSteps = totalDuration / intervalTime
     const increment = 100 / totalSteps

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion, useSpring, useTransform } from 'framer-motion'
 import { useLenisScroll } from '@/hooks/useLenisScroll'
@@ -8,6 +8,14 @@ import styles from './about.module.scss'
 const About = React.memo(() => {
   const sectionRef = useRef<HTMLElement | null>(null)
   const { elementProgressMotion } = useLenisScroll(sectionRef as unknown as React.RefObject<HTMLElement>)
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.innerWidth < 768
+  })
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768)
+  }, [])
 
   // Ajuste del timing: tu "centro visual" ocurre antes de 0.5 en algunos layouts,
   // así que evitamos que el título/info se desarmen demasiado pronto.
@@ -38,7 +46,7 @@ const About = React.memo(() => {
           className={styles.outline1}
           style={{
             opacity: 0.09,
-            y: outline1Y,
+            y: isMobile ? 0 : outline1Y,
           }}
         >
           BUENOS AIRES // 1995
@@ -47,7 +55,7 @@ const About = React.memo(() => {
           className={styles.outline2}
           style={{
             opacity: 0.06,
-            y: outline2Y,
+            y: isMobile ? 0 : outline2Y,
           }}
         >
           CREATIVE_SYSTEMS
@@ -55,7 +63,13 @@ const About = React.memo(() => {
       </div>
 
       <div className={styles.grid}>
-        <motion.div className={styles.imageCard} style={{ x: smoothImageX, scale: smoothImageScale }}>
+        <motion.div
+          className={styles.imageCard}
+          style={{
+            x: isMobile ? 0 : smoothImageX,
+            scale: isMobile ? 1 : smoothImageScale,
+          }}
+        >
           <Image
             src="/images/me.png"
             alt="Fernando Alarcon"
@@ -70,13 +84,22 @@ const About = React.memo(() => {
           </div>
         </motion.div>
 
-        <motion.div className={styles.manifesto} style={{ x: smoothContentX, opacity: smoothContentOpacity }}>
+        <motion.div
+          className={styles.manifesto}
+          style={{ x: isMobile ? 0 : smoothContentX, opacity: isMobile ? 1 : smoothContentOpacity }}
+        >
           <div className={styles.kicker}>
             <span className={styles.kickerLine} />
             <span className={styles.kickerText}>IDENTITY_MANIFESTO</span>
           </div>
 
-          <motion.h2 style={{ y: smoothTitleY, opacity: smoothTitleOpacity }} className={styles.headline}>
+          <motion.h2
+            style={{
+              y: isMobile ? 0 : smoothTitleY,
+              opacity: isMobile ? 1 : smoothTitleOpacity,
+            }}
+            className={styles.headline}
+          >
             <SplitInline
               segments={[
                 { words: ['Born', 'in'] },

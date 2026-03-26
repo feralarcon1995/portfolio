@@ -1,9 +1,9 @@
 'use client'
 
-import { useLayoutEffect, type CSSProperties } from 'react'
+import { useEffect, useLayoutEffect, useState, type CSSProperties } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import Footer from '@/components/Footer/Footer'
 import { useSmoothScroll } from '@/components/SmoothScroll/SmoothScrollProvider'
@@ -66,13 +66,25 @@ const stackCellReveal = {
 
 export default function JournalArticle({ entry }: { entry: JournalExperience }) {
   const { lenis } = useSmoothScroll()
+  const prefersReducedMotion = useReducedMotion()
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.innerWidth < 768
+  })
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768)
+  }, [])
+
+  const forceVisible = prefersReducedMotion || isMobile
+  const initialVariant = forceVisible ? 'visible' : 'hidden'
 
   useLayoutEffect(() => {
     const goTop = () => {
       if (typeof window === 'undefined') return
       window.scrollTo(0, 0)
       document.documentElement.scrollTop = 0
-      ;(document.body as HTMLElement).scrollTop = 0
+        ; (document.body as HTMLElement).scrollTop = 0
       lenis?.scrollTo(0, { immediate: true })
     }
     goTop()
@@ -94,7 +106,8 @@ export default function JournalArticle({ entry }: { entry: JournalExperience }) 
     <>
       <article className={styles.root}>
         <motion.div
-          initial="hidden"
+          initial={initialVariant}
+          animate={forceVisible ? 'visible' : undefined}
           whileInView="visible"
           viewport={viewport}
           variants={fadeUp}
@@ -107,7 +120,8 @@ export default function JournalArticle({ entry }: { entry: JournalExperience }) 
 
         <motion.header
           className={styles.hero}
-          initial="hidden"
+          initial={initialVariant}
+          animate={forceVisible ? 'visible' : undefined}
           whileInView="visible"
           viewport={viewport}
           variants={{
@@ -166,7 +180,8 @@ export default function JournalArticle({ entry }: { entry: JournalExperience }) 
         <div className={styles.grid2}>
           <motion.div
             className={styles.copyCol}
-            initial="hidden"
+            initial={initialVariant}
+            animate={forceVisible ? 'visible' : undefined}
             whileInView="visible"
             viewport={viewport}
             variants={staggerContainer}
@@ -181,7 +196,8 @@ export default function JournalArticle({ entry }: { entry: JournalExperience }) 
 
           <motion.div
             className={styles.visualCol}
-            initial="hidden"
+            initial={initialVariant}
+            animate={forceVisible ? 'visible' : undefined}
             whileInView="visible"
             viewport={viewport}
             variants={fadeUpSlow}
@@ -203,7 +219,8 @@ export default function JournalArticle({ entry }: { entry: JournalExperience }) 
         <motion.section
           className={styles.stackSection}
           aria-labelledby="stack-heading"
-          initial="hidden"
+          initial={initialVariant}
+          animate={forceVisible ? 'visible' : undefined}
           whileInView="visible"
           viewport={viewport}
           variants={{
@@ -243,7 +260,8 @@ export default function JournalArticle({ entry }: { entry: JournalExperience }) 
                 : styles.testimonials
             }
             aria-labelledby="testimonials-heading"
-            initial="hidden"
+            initial={initialVariant}
+            animate={forceVisible ? 'visible' : undefined}
             whileInView="visible"
             viewport={viewport}
             variants={{

@@ -7,7 +7,7 @@ export const useLenisScroll = (targetRef: React.RefObject<HTMLElement>) => {
   const elementProgressMotion = useMotionValue(0);
 
   useEffect(() => {
-    if (!lenis || !targetRef.current) return;
+    if (!targetRef.current) return;
 
     const updateScroll = () => {
       if (!targetRef.current) return;
@@ -21,11 +21,23 @@ export const useLenisScroll = (targetRef: React.RefObject<HTMLElement>) => {
       elementProgressMotion.set(p);
     };
 
-    lenis.on('scroll', updateScroll);
+    updateScroll();
+
+    if (lenis) {
+      lenis.on('scroll', updateScroll);
+    } else {
+      window.addEventListener('scroll', updateScroll, { passive: true });
+      window.addEventListener('resize', updateScroll);
+    }
     updateScroll();
 
     return () => {
-      lenis.off('scroll', updateScroll);
+      if (lenis) {
+        lenis.off('scroll', updateScroll);
+      } else {
+        window.removeEventListener('scroll', updateScroll);
+        window.removeEventListener('resize', updateScroll);
+      }
     };
   }, [lenis, targetRef, elementProgressMotion]);
 
