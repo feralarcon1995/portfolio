@@ -165,13 +165,11 @@
   width: 62px;
   height: 62px;
   border-radius: 999px;
-  background: rgba(242, 229, 191, 0.12);
+  background: transparent;
   color: var(--main-color);
   display: grid;
   place-items: center;
   z-index: 2;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .badge:hover .badgeSpin {
