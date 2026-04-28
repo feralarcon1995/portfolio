@@ -5,6 +5,7 @@ import { getSiteUrl } from '@/lib/siteUrl'
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const base = getSiteUrl()
+  const lastmod = new Date().toISOString()
   const paths = [
     '',
     ...journalExperiences.map((e) => `/journal/${e.slug}`),
@@ -19,6 +20,7 @@ ${paths
     return `  <url>
     <loc>${base}${path}</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>${lastmod}</lastmod>
     <priority>${priority}</priority>
   </url>`
   })

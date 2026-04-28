@@ -30,7 +30,12 @@ const Contact = dynamic(() => import("@/components/Footer/Footer"), {
 
 export default function Home() {
   return (
-    <Layout description="Home page" showCircularText={false}>
+    <Layout
+      title="Portfolio"
+      description="Fernando Alarcon's portfolio, a frontend and full stack developer specialized in React, Next.js, TypeScript, and high-performance web experiences."
+      image="https://www.feralarcon.com.ar/hero.png"
+      showCircularText={false}
+    >
       <Hero />
       <About />
       <Experiencie />

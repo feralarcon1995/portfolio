@@ -13,6 +13,9 @@ interface LayoutProps {
   children: React.ReactNode;
   description?: string;
   title?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noIndex?: boolean;
   showCircularText?: boolean;
   hideChrome?: boolean;
 }
@@ -35,7 +38,16 @@ const Monument = localFont({
   weight: "900",
 });
 
-export const Layout = ({ children, title, description, showCircularText = true, hideChrome = false }: LayoutProps) => {
+export const Layout = ({
+  children,
+  title,
+  description,
+  image,
+  type = 'website',
+  noIndex = false,
+  showCircularText = true,
+  hideChrome = false
+}: LayoutProps) => {
   const activeSection = useActiveSection();
   const router = useRouter();
   const siteUrl = getSiteUrl();
@@ -43,8 +55,10 @@ export const Layout = ({ children, title, description, showCircularText = true, 
   const metaDescription = description || "Fernando Alarcon's Portfolio – Frontend Web Developer specializing in building dynamic and responsive user interfaces with React, Next.js, and modern JavaScript frameworks.";
 
   const pageTitle = title ? `${title} | Fernando Alarcon` : `Fernando Alarcon | ${activeSection}`;
-  const pageUrl = `${siteUrl}${router.asPath === '/' ? '' : router.asPath}`;
-  const ogImage = `${siteUrl}/hero.png`;
+  const currentPath = router.asPath.split('?')[0].split('#')[0];
+  const pageUrl = `${siteUrl}${currentPath === '/' ? '' : currentPath}`;
+  const ogImage = image || `${siteUrl}/hero.png`;
+  const robotsContent = noIndex ? 'noindex, nofollow' : 'index, follow';
   return (
     <SmoothScrollProvider>
       <Head>
@@ -57,12 +71,12 @@ export const Layout = ({ children, title, description, showCircularText = true, 
         <meta name="author" content="Fernando Alarcon" />
         <meta name="keywords" content="web development, frontend developer, React developer, NextJS, JavaScript, portfolio, Fernando Alarcon, creative developer" />
 
-        <meta name="robots" content="index, follow" />
+        <meta name="robots" content={robotsContent} />
         <meta name="language" content="English" />
         <meta name="google-site-verification" content="Rzd8SbIVpnsPU-pj-nmRWyCJ7uk70isbEulxrksaif4" />
         <link rel="canonical" href={pageUrl} />
 
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content={type} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:title" content={pageTitle}
         />

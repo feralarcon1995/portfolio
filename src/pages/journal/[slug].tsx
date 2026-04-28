@@ -6,14 +6,22 @@ import {
   type JournalExperience,
 } from '@/data/journalExperiences'
 import JournalArticle from '@/components/Journal/JournalArticle'
+import { getSiteUrl } from '@/lib/siteUrl'
 
 type PageProps = {
   entry: JournalExperience
 }
 
 export default function JournalEntryPage({ entry }: PageProps) {
+  const siteUrl = getSiteUrl()
   return (
-    <Layout title={`${entry.company} · Journal`} showCircularText={false}>
+    <Layout
+      title={`${entry.company} · Journal`}
+      description={entry.description}
+      image={`${siteUrl}${entry.image}`}
+      type="article"
+      showCircularText={false}
+    >
       <JournalArticle entry={entry} />
     </Layout>
   )
